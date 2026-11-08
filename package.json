@@ -1,0 +1,11 @@
+{
+  "name": "carbon-seeker-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "碳寻 · 企业碳减排管理平台 —— 交互式项目展示站（个人碳足迹 / 企业碳账本 / 绿色积分 / 数据看板）",
+  "scripts": {
+    "build": "python build.py",
+    "check": "python build.py --check",
+    "test": "node --test tests/"
+  }
+}

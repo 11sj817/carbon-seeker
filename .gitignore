@@ -1,0 +1,16 @@
+# Python / Node 产物
+__pycache__/
+*.pyc
+node_modules/
+pnpm-lock.yaml
+
+# 临时与本地
+*.log
+qa/*.tmp
+C:/Temp/
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

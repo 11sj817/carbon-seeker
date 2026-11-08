@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f8a5f">
+<meta name="description" content="碳寻（Carbon Seeker）：企业碳减排管理的碳应用平台。在线计算个人碳足迹、建立企业碳账本（Scope 1/2/3）、用绿色积分兑换螺旋藻与海洋垃圾清理。因子与公式全部公开。">
+<meta name="color-scheme" content="light dark">
+<title>碳寻 · 企业碳减排管理的碳应用平台 | Carbon Seeker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%230f8a5f'/%3E%3Cg fill='%23fff'%3E%3Cellipse cx='20' cy='13' rx='4' ry='5'/%3E%3Cellipse cx='27.6' cy='26' rx='4' ry='5' transform='rotate(120 27.6 26)'/%3E%3Cellipse cx='12.4' cy='26' rx='4' ry='5' transform='rotate(240 12.4 26)'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+/* 碳寻 · Carbon Seeker —— 主题与版式
+   设计语言参照 DAC Workbench：左侧固定模块栏 + 顶部状态头 + 证据化内容面板。
+   不引入任何外部字体、图标库或框架。 */
+
+:root{
+  color-scheme:light;
+  --bg:#eef5f0;
+  --panel:#ffffff;
+  --panel2:#f5faf6;
+  --line:#d7e5db;
+  --line-soft:#e6efe9;
+  --txt:#14261c;
+  --dim:#5b7367;
+  --acc:#0f8a5f;
+  --acc-ink:#0b6a4a;
+  --acc2:#0d7d78;
+  --ok:#0f7a4d;
+  --warn:#8a6412;
+  --bad:#b03a46;
+  --gold:#9a7a0c;
+  --rail:#0e2a20;
+  --rail-txt:#a9c4b6;
+  --rail-dim:#7d9b8c;
+  --rail-on:#12855a;
+  --row-even:#f7fbf8;
+  --row-hover:#eaf6ef;
+  --chip:#eef7f1;
+  --shadow:0 6px 22px #0f2a1e12;
+  --c1:#12855a; --c2:#0d7d78; --c3:#c98a2b; --c4:#54789a; --c5:#8a6fae; --c6:#93a53f;
+  --header:70px; --rail-w:220px;
+}
+body.dark{
+  color-scheme:dark;
+  --bg:#0a1310;
+  --panel:#111e19;
+  --panel2:#16261f;
+  --line:#273f33;
+  --line-soft:#1e332a;
+  --txt:#e3efe7;
+  --dim:#93a99c;
+  --acc:#3fd092;
+  --acc-ink:#8ce6bd;
+  --acc2:#38c6ba;
+  --ok:#4ed7a1;
+  --warn:#e0b155;
+  --bad:#f08a92;
+  --gold:#e0bb4a;
+  --rail:#07110c;
+  --rail-txt:#a4c0b1;
+  --rail-dim:#6f8e7d;
+  --rail-on:#1a9c6a;
+  --row-even:#14231d;
+  --row-hover:#1b3227;
+  --chip:#17291f;
+  --shadow:0 6px 22px #00000055;
+  --c1:#4ed7a1; --c2:#48c8bd; --c3:#e0b155; --c4:#7fa6c9; --c5:#b9a1e0; --c6:#b6c65a;
+}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--header) + 18px);-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--txt);
+  font:14px/1.7 "Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+  font-variant-numeric:tabular-nums;
+  min-height:100vh;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--acc);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--acc2);outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-9999px;top:0;z-index:99;background:var(--acc);color:#fff;padding:10px 16px;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+.mono{font-family:"Cascadia Code",Consolas,"SFMono-Regular",monospace;font-variant-ligatures:none}
+
+/* ---------- 顶部 ---------- */
+.app-header{
+  position:sticky;top:0;z-index:50;height:var(--header);
+  display:flex;align-items:center;gap:18px;padding:0 22px;
+  background:var(--panel);border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-mark{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center}
+.brand-mark svg{width:38px;height:38px;display:block}
+.brand-text{min-width:0}
+.brand-text h1{margin:0;font:650 18px/1.15 Bahnschrift,"Segoe UI",sans-serif;letter-spacing:.3px;white-space:nowrap}
+.brand-text small{display:block;margin-top:3px;color:var(--dim);font:10px/1 "Cascadia Code",Consolas,monospace;letter-spacing:1.5px;text-transform:uppercase}
+.header-steps{display:flex;align-items:center;gap:6px;margin-left:8px;flex:1;min-width:0;overflow:hidden}
+.header-actions{margin-left:auto;display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.tag{font-size:11px;white-space:nowrap;color:var(--dim);border:1px solid var(--line);border-radius:6px;padding:3px 8px;background:var(--panel2)}
+.tag.live{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.tag.gold{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 40%,var(--line))}
+#buildTag{font-family:"Cascadia Code",Consolas,monospace;font-size:10.5px;letter-spacing:.4px;cursor:pointer}
+
+/* ---------- 左侧模块栏 ---------- */
+#rail{
+  position:fixed;left:0;top:var(--header);bottom:0;width:var(--rail-w);z-index:40;
+  display:flex;flex-direction:column;gap:2px;padding:18px 12px 16px;
+  background:var(--rail);color:var(--rail-txt);overflow-y:auto;
+  border-right:1px solid #ffffff0d;
+}
+.rail-caption{font:10px "Cascadia Code",Consolas,monospace;letter-spacing:1.5px;color:var(--rail-dim);padding:0 12px 8px}
+.rail-group{font-size:10px;letter-spacing:.6px;color:var(--rail-dim);padding:16px 12px 6px}
+#rail button{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  border:0;background:transparent;color:var(--rail-txt);border-radius:8px;
+  padding:9px 12px;font-size:12.5px;cursor:pointer;white-space:nowrap;
+}
+#rail button .ico{width:18px;height:18px;flex:0 0 18px;display:grid;place-items:center;opacity:.85}
+#rail button .ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#rail button:hover{background:#ffffff0f;color:#fff}
+#rail button[aria-current="true"]{background:var(--rail-on);color:#fff;font-weight:600}
+#rail button[aria-current="true"] .ico{opacity:1}
+.rail-foot{margin-top:auto;padding:18px 12px 0;font:10px/1.9 "Cascadia Code",Consolas,monospace;color:var(--rail-dim)}
+
+/* ---------- 主内容 ---------- */
+main{margin-left:var(--rail-w);padding:0 26px 88px;max-width:1500px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:26px 0 18px;flex-wrap:wrap}
+.page-head h2{margin:6px 0 6px;font-size:25px;line-height:1.28;letter-spacing:-.4px;font-weight:650}
+.page-head p{margin:0;color:var(--dim);font-size:12.5px;max-width:72ch}
+.eyebrow{color:var(--acc);font:600 10px/1.4 "Cascadia Code",Consolas,monospace;letter-spacing:1.8px;text-transform:uppercase}
+.page-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* 面板 */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow);min-width:0}
+.card.pad-lg{padding:22px}
+.card.accent{border-top:3px solid var(--acc)}
+.card h3{margin:0 0 14px;font-size:13.5px;font-weight:650;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .sub{margin-left:auto;font-size:11px;font-weight:400;color:var(--dim)}
+.card h4{margin:18px 0 8px;font-size:13px;font-weight:650}
+.card h4:first-child{margin-top:0}
+.grid{display:grid;gap:16px}
+.grid.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.grid.side{grid-template-columns:340px minmax(0,1fr);align-items:start}
+.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.muted{color:var(--dim)}
+.small{font-size:11.5px;line-height:1.85}
+.lead{font-size:13.5px;line-height:1.95;color:var(--dim);max-width:78ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.hero-actions .btn{padding:11px 20px;font-size:13px}
+.pill.block{border-radius:8px;padding:5px 10px;line-height:1.6;align-items:flex-start}
+hr.sep{border:0;border-top:1px solid var(--line-soft);margin:16px 0}
+
+/* 按钮 */
+button.btn{
+  border:1px solid var(--line);background:var(--panel);color:var(--txt);
+  border-radius:8px;padding:8px 13px;cursor:pointer;font-size:12.5px;font-weight:500;
+  display:inline-flex;align-items:center;gap:7px;transition:background .14s,border-color .14s,color .14s;
+}
+button.btn:hover{border-color:var(--acc);color:var(--acc);background:var(--panel2)}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+button.btn.primary{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:650}
+button.btn.primary:hover{background:var(--acc-ink);border-color:var(--acc-ink);color:#fff}
+button.btn.ghost{background:transparent}
+button.btn.mini{padding:5px 9px;font-size:11.5px}
+button.btn.danger{color:var(--bad)}
+.icon-btn{width:36px;height:36px;padding:0;justify-content:center}
+.icon-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+
+/* 分段控件 */
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;border-radius:7px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--dim);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--acc);font-weight:650;box-shadow:0 1px 3px #0000000f}
+
+/* 表单 */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;min-width:0}
+.field label{font-size:11.5px;color:var(--dim);display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.field label b{color:var(--txt);font-weight:600}
+input[type=number],input[type=text],select,textarea{
+  width:100%;padding:8px 10px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:8px;font-size:12.5px;color:var(--txt);min-height:36px;
+}
+input[type=number]{font-family:"Cascadia Code",Consolas,monospace}
+select{cursor:pointer}
+input:focus,select:focus,textarea:focus{border-color:var(--acc);background:var(--panel)}
+input[type=range]{width:100%;accent-color:var(--acc);height:20px}
+input[type=checkbox]{accent-color:var(--acc);width:16px;height:16px}
+.row-inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow)}
+.kpi .k{font-size:11px;color:var(--dim);display:flex;align-items:center;gap:5px}
+.kpi .v{font:700 24px/1.25 Bahnschrift,"Cascadia Code",Consolas,monospace;letter-spacing:-.5px;margin-top:6px;display:flex;align-items:baseline;gap:4px}
+.kpi .v small{font:500 11.5px/1 "Segoe UI",sans-serif;color:var(--dim);letter-spacing:0}
+.kpi .d{font-size:11px;margin-top:5px;color:var(--dim)}
+.kpi.hl{border-top:3px solid var(--acc)}
+.kpi.hl .v{color:var(--acc)}
+
+/* 表格 */
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;max-width:100%}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
+thead th{
+  position:sticky;top:0;background:var(--panel2);text-align:left;font-weight:600;
+  color:var(--dim);padding:9px 11px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:2;
+}
+tbody td{padding:8px 11px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+tbody tr:nth-child(even){background:var(--row-even)}
+tbody tr:hover{background:var(--row-hover)}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:"Cascadia Code",Consolas,monospace}
+table.plain{min-width:0}
+table select{min-width:78px;padding:6px 8px;min-height:32px;font-size:12px}
+table td.num{white-space:nowrap}
+table input{min-height:32px;padding:6px 8px;font-size:12px}
+table.plain td{padding:6px 10px}
+table.plain tbody tr:nth-child(even){background:transparent}
+tfoot td{padding:9px 11px;font-weight:650;border-top:2px solid var(--line)}
+
+/* 图 */
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.chart.donut{width:auto;max-width:100%}
+.chart text{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;fill:var(--dim)}
+.chart .axis{stroke:var(--line)}
+.chart .gridline{stroke:var(--line-soft)}
+.chart .val{font-family:"Cascadia Code",Consolas,monospace}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:11.5px;color:var(--dim)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* 徽标 / 状态 */
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--dim);border:1px solid var(--line)}
+.pill.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,var(--line))}
+.pill.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,var(--line))}
+.pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+.pill.acc{color:var(--acc);border-color:color-mix(in srgb,var(--acc) 35%,var(--line))}
+
+/* 折叠面板 */
+details.acc{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:10px;overflow:hidden}
+details.acc>summary{cursor:pointer;padding:12px 15px;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:center;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::after{content:"+";margin-left:auto;color:var(--dim);font:16px/1 "Cascadia Code",Consolas,monospace}
+details.acc[open]>summary{border-bottom:1px solid var(--line-soft);background:var(--panel2)}
+details.acc[open]>summary::after{content:"–"}
+details.acc .acc-body{padding:15px}
+details.acc>summary .tag{margin-left:6px}
+
+/* 建议条目 */
+.sugg{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:11px;align-items:start;padding:11px 13px;border:1px solid var(--line);border-radius:9px;margin-bottom:9px;background:var(--panel)}
+.sugg .n{width:24px;height:24px;border-radius:7px;background:var(--panel2);display:grid;place-items:center;font:600 11px "Cascadia Code",Consolas,monospace;color:var(--acc)}
+.sugg .t{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.sugg .m{font-size:11.5px;color:var(--dim);line-height:1.8}
+.sugg .v{text-align:right;font:650 13px "Cascadia Code",Consolas,monospace;color:var(--acc);white-space:nowrap}
+.sugg .v small{display:block;font-size:10.5px;color:var(--dim);font-weight:400;margin-top:3px}
+
+/* 进度 */
+.bar{height:8px;border-radius:99px;background:var(--panel2);border:1px solid var(--line-soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));border-radius:99px}
+
+/* 卡片网格：模块入口 */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:16px;cursor:pointer;transition:border-color .15s,transform .15s;box-shadow:var(--shadow)}
+.tile:hover{border-color:var(--acc);transform:translateY(-1px)}
+.tile .k{width:32px;height:32px;border-radius:9px;background:var(--chip);display:grid;place-items:center;margin-bottom:10px;color:var(--acc)}
+.tile .k svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tile h4{margin:0 0 5px;font-size:13.5px}
+.tile p{margin:0;font-size:11.5px;color:var(--dim);line-height:1.8}
+
+/* 时间轴 */
+.timeline{list-style:none;margin:0;padding:0 0 0 20px;border-left:2px solid var(--line)}
+.timeline li{position:relative;padding:0 0 15px 14px;font-size:12.5px}
+.timeline li::before{content:"";position:absolute;left:-25px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 3px var(--panel)}
+.timeline b{font-family:"Cascadia Code",Consolas,monospace;font-size:11.5px;color:var(--acc);display:block;margin-bottom:2px}
+
+/* SWOT */
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.swot section{border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:var(--panel2)}
+.swot h5{margin:0 0 8px;font-size:12.5px;display:flex;align-items:center;gap:7px}
+.swot h5 i{width:8px;height:8px;border-radius:2px;background:var(--c1)}
+.swot[data-k="w"] h5 i{background:var(--c3)}
+.swot[data-k="o"] h5 i{background:var(--c2)}
+.swot[data-k="t"] h5 i{background:var(--c4)}
+.swot ul{margin:0;padding-left:16px;font-size:11.5px;line-height:1.9;color:var(--dim)}
+
+/* 团队 */
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px}
+.person{border:1px solid var(--line);border-radius:10px;padding:13px;background:var(--panel)}
+.person .nm{font-size:13px;font-weight:650;display:flex;align-items:center;gap:7px}
+.person .role{font-size:11px;color:var(--acc);margin:3px 0 7px;font-family:"Cascadia Code",Consolas,monospace}
+.person p{margin:0;font-size:11px;color:var(--dim);line-height:1.8}
+
+/* 提示条 */
+.note{border:1px solid var(--line);border-left:3px solid var(--acc2);background:var(--panel2);border-radius:8px;padding:10px 13px;font-size:11.5px;color:var(--dim);line-height:1.85}
+.note b{color:var(--txt)}
+.note.warn{border-left-color:var(--warn)}
+
+/* 状态栏 */
+footer.status{
+  position:fixed;left:var(--rail-w);right:0;bottom:0;height:34px;z-index:45;
+  display:flex;align-items:center;gap:14px;padding:0 16px;font:10.5px/1 "Cascadia Code",Consolas,monospace;
+  color:var(--dim);background:var(--panel);border-top:1px solid var(--line);
+}
+footer.status .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);flex:0 0 7px}
+footer.status .sp{margin-left:auto}
+
+/* 打印 */
+@media print{
+  #rail,footer.status,.app-header,.page-actions,.no-print{display:none!important}
+  main{margin:0;padding:0;max-width:none}
+  body{background:#fff;color:#000}
+  .card{box-shadow:none;break-inside:avoid;page-break-inside:avoid;border-color:#bbb}
+  .grid.side{grid-template-columns:1fr}
+  details.acc{border-color:#bbb}
+  details.acc .acc-body{display:block!important}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-size:9px;color:#555}
+}
+
+/* 响应式 */
+@media (max-width:1180px){
+  .grid.side{grid-template-columns:minmax(0,1fr)!important}
+  .grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  :root{--rail-w:0px;--header:64px}
+  #rail{
+    top:auto;bottom:0;left:0;right:0;width:auto;height:56px;flex-direction:row;gap:0;
+    padding:0 6px;overflow-x:auto;overflow-y:hidden;border-right:0;border-top:1px solid #ffffff1a;
+  }
+  #rail .rail-caption,#rail .rail-group,#rail .rail-foot{display:none}
+  #rail button{flex:0 0 auto;flex-direction:column;gap:3px;font-size:10px;padding:6px 10px;border-radius:9px}
+  #rail button .ico{width:18px;height:18px}
+  main{padding:0 14px 96px}
+  footer.status{left:0;bottom:56px;height:26px;font-size:10px}
+  .grid.two,.grid.three,.swot,.tiles{grid-template-columns:minmax(0,1fr)}
+  .card,.grid,.grid>*{min-width:0}
+  .page-head{padding:18px 0 14px}
+  .page-head h2{font-size:21px}
+  .header-steps{display:none}
+  .brand-text small{display:none}
+  .brand-text h1 span{display:none}
+  .app-header{gap:10px;padding:0 14px}
+  .sugg{grid-template-columns:24px minmax(0,1fr);gap:8px}
+  .sugg .v{grid-column:2;text-align:left;margin-top:2px}
+  .sugg .v small{display:inline;margin-left:6px}
+  .table-wrap{-webkit-overflow-scrolling:touch}
+  .table-wrap::after{content:'';}
+  svg.chart{min-height:150px}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(132px,1fr))}
+  .kpi .v{font-size:20px}
+  button.btn,.seg button,#rail button{min-height:40px}
+  .row-inline,.row-3{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .tile:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<script>window.__BUILD__ = {"app": "carbon-seeker", "version": "1.0.0", "digest": "1105aa77205a", "time": "2026-11-08T13:58:24Z", "sourceCommit": null, "sourceDirty": false, "note": "digest 为注入脚本后的正文 SHA-256 前 12 位；sourceCommit 是构建时本地 HEAD。"};</script>
+<a class="skip" href="#main">跳到主要内容</a>
+
+<header class="app-header">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 40 40">
+        <rect width="40" height="40" rx="11" fill="var(--acc)"></rect>
+        <g fill="#fff" opacity=".96">
+          <ellipse cx="20" cy="13.2" rx="4" ry="5"></ellipse>
+          <ellipse cx="27.4" cy="25.8" rx="4" ry="5" transform="rotate(120 27.4 25.8)"></ellipse>
+          <ellipse cx="12.6" cy="25.8" rx="4" ry="5" transform="rotate(240 12.6 25.8)"></ellipse>
+        </g>
+      </svg>
+    </span>
+    <div class="brand-text">
+      <h1>碳寻 <span style="font-weight:400;color:var(--dim)">Carbon Seeker</span></h1>
+      <small>企业碳减排管理的碳应用平台</small>
+    </div>
+  </div>
+
+  <div class="header-steps">
+    <span class="tag gold">第九届河北省“互联网+” 铜奖</span>
+    <span class="tag">高教主赛道 · 河北经贸大学</span>
+    <span class="tag live">本地计算 · 数据不上传</span>
+  </div>
+
+  <div class="header-actions">
+    <span class="tag" id="buildTag" title="构建摘要">build</span>
+    <button class="btn icon-btn" id="themeBtn" type="button" aria-label="切换到深色主题" title="切换主题">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav id="rail" aria-label="模块导航"></nav>
+
+<main id="main">
+  <noscript>
+    <div class="card"><h3>需要开启 JavaScript</h3>
+      <p class="lead">本站的碳足迹与企业碳账本都在浏览器内实时计算，因此需要启用 JavaScript。
+      关闭脚本时仍可阅读源码中的项目资料：见仓库 README 与 src/data/project.js。</p></div>
+  </noscript>
+</main>
+
+<footer class="status">
+  <span class="dot" aria-hidden="true"></span>
+  <span id="statusText">加载中…</span>
+  <span class="sp">碳寻 v1.0 · 单文件构建 · 因子表内置</span>
+</footer>
+
+<!-- core/factors.js -->
+<script>
+/* 排放因子库与业务常量
+   取值原则：优先采用中国官方口径（生态环境部 / 省级清单指南）与国际公开数据集
+   （DEFRA 2023、Poore & Nemecek 2018）。所有数值保留 3~4 位有效数字，
+   页面「数据与方法」逐条列出单位与来源；这些是本演示站的唯一计算依据。 */
+(function (global) {
+  'use strict';
+
+  var FACTORS = [
+    /* --- 能源（Scope 1 / 2）--- */
+    { k: 'elec', g: '能源', name: '外购电力', unit: 'kWh', v: 0.5703,
+      src: '生态环境部：2022 年全国电网平均 CO₂ 排放因子 0.5703 tCO₂/MWh' },
+    { k: 'heat', g: '能源', name: '外购热力', unit: 'GJ', v: 110,
+      src: '按 0.11 tCO₂/GJ 的化石供热缺省值折算' },
+    { k: 'gas', g: '能源', name: '天然气', unit: 'm³', v: 2.162,
+      src: '《省级温室气体清单编制指南（试行）》化石燃料缺省值' },
+    { k: 'lpg', g: '能源', name: '液化石油气', unit: 'kg', v: 3.101, src: '《省级温室气体清单编制指南》LPG 3.101 tCO₂/t' },
+    { k: 'gasoline', g: '能源', name: '汽油', unit: 'L', v: 2.12,
+      src: '2.925 tCO₂/t × 密度 0.725 kg/L' },
+    { k: 'diesel', g: '能源', name: '柴油', unit: 'L', v: 2.6,
+      src: '3.096 tCO₂/t × 密度 0.84 kg/L' },
+    { k: 'coal', g: '能源', name: '原煤', unit: 't', v: 1900,
+      src: '1.900 tCO₂/t 原煤（低位发热量 20 908 kJ/kg）' },
+    { k: 'water', g: '能源', name: '自来水', unit: 'm³', v: 0.344,
+      src: '供水处理与输配电耗折算的近似值，用于生活侧估算' },
+
+    /* --- 出行（Scope 3 / 生活侧）--- */
+    { k: 'car', g: '出行', name: '汽油私家车', unit: 'km', v: 0.17,
+      src: '按 8 L/100 km 汽油车 × 2.12 kgCO₂/L' },
+    { k: 'taxi', g: '出行', name: '出租 / 网约车', unit: 'km', v: 0.21, src: 'DEFRA 2023 中型汽油车平均值' },
+    { k: 'bus', g: '出行', name: '公共汽车', unit: '人·km', v: 0.103, src: 'DEFRA 2023 local bus' },
+    { k: 'metro', g: '出行', name: '城市轨道交通', unit: '人·km', v: 0.041, src: 'DEFRA 2023 light rail / metro' },
+    { k: 'rail', g: '出行', name: '高铁 / 普速铁路', unit: '人·km', v: 0.029, src: 'DEFRA 2023 national rail' },
+    { k: 'flight', g: '出行', name: '国内航空', unit: '人·km', v: 0.246, src: 'DEFRA 2023 domestic flight（含辐射强迫校正）' },
+    { k: 'commute', g: '出行', name: '员工通勤（混合方式）', unit: '人·km', v: 0.12, src: '公交与私家车按 6:4 加权的企业填报代理值' },
+
+    /* --- 食物（kgCO₂e/kg 食材，含土地利用与供应链）--- */
+    { k: 'beef', g: '食物', name: '牛肉', unit: 'kg', v: 60, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'pork', g: '食物', name: '猪肉', unit: 'kg', v: 7.2, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'poultry', g: '食物', name: '禽肉', unit: 'kg', v: 6.1, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'fish', g: '食物', name: '水产', unit: 'kg', v: 5.1, src: 'Poore & Nemecek 2018，养殖类平均' },
+    { k: 'egg', g: '食物', name: '蛋类', unit: 'kg', v: 4.5, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'dairy', g: '食物', name: '奶及奶制品', unit: 'kg', v: 3.0, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'rice', g: '食物', name: '米面主食', unit: 'kg', v: 4.0, src: 'Poore & Nemecek 2018，稻米为主，含 CH₄' },
+    { k: 'wheat', g: '食物', name: '小麦制品', unit: 'kg', v: 1.4, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'veg', g: '食物', name: '蔬菜', unit: 'kg', v: 0.5, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'fruit', g: '食物', name: '水果', unit: 'kg', v: 0.7, src: 'Poore & Nemecek 2018（Our World in Data 汇总）' },
+    { k: 'meal', g: '食物', name: '外出就餐', unit: '次', v: 2.5, src: '按一餐 1.2 kg 食材 + 烹饪与损耗估算' },
+
+    /* --- 用品与废弃物（Scope 3）--- */
+    { k: 'tshirt', g: '用品', name: '棉质 T 恤', unit: '件', v: 6.5, src: 'WRAP / Carbon Trust 服装碳足迹区间中值' },
+    { k: 'pants', g: '用品', name: '长裤', unit: '件', v: 12, src: 'WRAP / Carbon Trust 服装碳足迹区间中值' },
+    { k: 'coat', g: '用品', name: '外套', unit: '件', v: 20, src: 'WRAP / Carbon Trust 服装碳足迹区间中值' },
+    { k: 'paper', g: '用品', name: 'A4 复印纸', unit: '张', v: 0.005, src: '文化用纸 1.1 tCO₂/t × 4.5 g/张' },
+    { k: 'bottle', g: '用品', name: 'PET 饮料瓶', unit: '个', v: 0.082, src: '500 mL PET 瓶全生命周期估算' },
+    { k: 'bag', g: '用品', name: '塑料袋', unit: '个', v: 0.033, src: 'HDPE 袋 2.0 kgCO₂e/kg × 16.5 g' },
+    { k: 'freight', g: '用品', name: '公路货运', unit: 't·km', v: 0.062, src: '中型柴油货车装载率 60% 折算' },
+    { k: 'waste', g: '用品', name: '生活垃圾（填埋）', unit: 'kg', v: 0.6, src: '填埋 CH₄ 排放按 0.6 kgCO₂e/kg 湿基估算' }
+  ];
+
+  var MAP = {};
+  FACTORS.forEach(function (f) { MAP[f.k] = f; });
+
+  /* 生活侧人均参照：城镇居民生活消费直接与间接排放的近似值 */
+  var BENCHMARK = {
+    personalAnnual: 2600,      // kgCO₂e/人·年
+    personalLabel: '城镇居民生活消费 2.6 tCO₂e/人·年（近似参照值）',
+    nationalPerCapita: 8000    // 含工业与电力的全国人均，仅作背景
+  };
+
+  /* 行业强度示意值：tCO₂e / 万元产值，用于企业账本对标 */
+  var SECTORS = [
+    { k: 'steel', name: '钢铁冶炼', v: 2.6 },
+    { k: 'building', name: '建材（水泥/玻璃）', v: 2.2 },
+    { k: 'chemical', name: '化学制品', v: 1.45 },
+    { k: 'logistics', name: '物流仓储', v: 0.55 },
+    { k: 'machinery', name: '机械制造', v: 0.42 },
+    { k: 'food', name: '食品加工', v: 0.3 },
+    { k: 'electronics', name: '电子与设备', v: 0.16 }
+  ];
+
+  /* 积分与兑换（1 kg 减排 = 10 绿色积分） */
+  var POINTS = {
+    perKg: 10,
+    items: [
+      { k: 'spirulina', name: '螺旋藻干粉 100 g', cost: 500, kind: 'carbon', credit: 0.18,
+        note: '螺旋藻光合固碳，按 1.8 gCO₂/g 干重折算，可制营养品' },
+      { k: 'ocean', name: '海洋垃圾清理 1 kg', cost: 300, kind: 'eco', credit: 0,
+        note: '与沿海机构合作的清理服务，计生态贡献量，不折算碳减排' },
+      { k: 'reuse', name: '旧物循环 1 件', cost: 200, kind: 'carbon', credit: 3.2,
+        note: '以二手替代新品，按平均单件隐含碳 3.2 kg 折算' },
+      { k: 'tree', name: '合作林场乔木 1 棵·年', cost: 1200, kind: 'carbon', credit: 10,
+        note: '按乔木年净固碳 10 kgCO₂e 估算' }
+    ]
+  };
+
+  var CONST = {
+    co2PerKgSpirulina: 1.8,
+    treePerYear: 10,
+    maxPointsPerYear: 200000
+  };
+
+  var API = { FACTORS: FACTORS, map: MAP, BENCHMARK: BENCHMARK, SECTORS: SECTORS, POINTS: POINTS, CONST: CONST };
+  global.CS = global.CS || {};
+  global.CS.factors = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- core/calc.js -->
+<script>
+/* 计算内核：个人碳足迹、企业碳账本、绿色积分与兑换。
+   纯函数，无 DOM 依赖 —— 浏览器与 node --test 共用同一份代码。 */
+(function (global) {
+  'use strict';
+
+  var F = (typeof module !== 'undefined' && module.exports)
+    ? require('./factors.js')
+    : (global.CS && global.CS.factors);
+
+  if (!F) throw new Error('碳寻：排放因子库未加载（core/factors.js 必须先于 core/calc.js）');
+
+  var MAP = F.map;
+
+  /* ---------------- 个人碳足迹 ---------------- */
+
+  var PERSONAL_DEFAULT = {
+    food: { beef: 2, pork: 3, poultry: 2, fish: 1.5, egg: 2, dairy: 9, rice: 9, wheat: 3, veg: 12, fruit: 9, meal: 4 },
+    home: { elec: 150, gas: 15, water: 6, heat: 0 },
+    travel: { car: 400, bus: 60, metro: 80, rail: 0, flight: 0, bike: 40 },
+    goods: { tshirt: 1, pants: 1, coat: 0.4, paper: 150, bottle: 20, bag: 20 }
+  };
+
+  var FOOD_KEYS = ['beef', 'pork', 'poultry', 'fish', 'egg', 'dairy', 'rice', 'wheat', 'veg', 'fruit', 'meal'];
+  var HOME_KEYS = ['elec', 'gas', 'water', 'heat'];
+  var TRAVEL_KEYS = ['car', 'bus', 'metro', 'rail', 'flight'];
+  var GOODS_KEYS = ['tshirt', 'pants', 'coat', 'paper', 'bottle', 'bag'];
+
+  function num(v, d) {
+    var n = typeof v === 'number' ? v : parseFloat(v);
+    if (!isFinite(n) || n < 0) return 0;
+    return n;
+  }
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  /* 每月排放（kgCO₂e）。衣物按「件/年」录入后摊到月。 */
+  function personalEmission(input) {
+    var s = input || PERSONAL_DEFAULT;
+    var detail = { food: [], home: [], travel: [], goods: [] };
+    var g = { food: 0, home: 0, travel: 0, goods: 0 };
+
+    FOOD_KEYS.forEach(function (k) {
+      var kg = num(s.food && s.food[k]) * MAP[k].v;
+      detail.food.push({ k: k, name: MAP[k].name, unit: MAP[k].unit, qty: num(s.food && s.food[k]), kg: kg });
+      g.food += kg;
+    });
+    HOME_KEYS.forEach(function (k) {
+      var kg = num(s.home && s.home[k]) * MAP[k].v;
+      detail.home.push({ k: k, name: MAP[k].name, unit: MAP[k].unit, qty: num(s.home && s.home[k]), kg: kg });
+      g.home += kg;
+    });
+    TRAVEL_KEYS.forEach(function (k) {
+      var kg = num(s.travel && s.travel[k]) * MAP[k].v;
+      detail.travel.push({ k: k, name: MAP[k].name, unit: MAP[k].unit, qty: num(s.travel && s.travel[k]), kg: kg });
+      g.travel += kg;
+    });
+    GOODS_KEYS.forEach(function (k) {
+      var q = num(s.goods && s.goods[k]);
+      var monthly = (k === 'tshirt' || k === 'pants' || k === 'coat') ? q / 12 : q;
+      var kg = monthly * MAP[k].v;
+      detail.goods.push({ k: k, name: MAP[k].name, unit: MAP[k].unit, qty: q, kg: kg });
+      g.goods += kg;
+    });
+
+    /* 骑行 / 步行按替代小汽车计减排（不产生负排放，单列抵扣） */
+    var bikeKm = num(s.travel && s.travel.bike);
+    var activeSaving = bikeKm * MAP.car.v;
+
+    var gross = g.food + g.home + g.travel + g.goods;
+    var net = Math.max(0, gross - activeSaving);
+
+    var items = [];
+    ['food', 'home', 'travel', 'goods'].forEach(function (grp) {
+      detail[grp].forEach(function (it) { if (it.kg > 0) items.push(it); });
+    });
+    items.sort(function (a, b) { return b.kg - a.kg; });
+
+    var share = function (v) { return gross > 0 ? v / gross : 0; };
+
+    return {
+      detail: detail,
+      groups: g,
+      grossMonthly: gross,
+      activeSaving: activeSaving,
+      monthly: net,
+      annual: net * 12,
+      grossAnnual: gross * 12,
+      savedAnnual: activeSaving * 12,
+      shares: { food: share(g.food), home: share(g.home), travel: share(g.travel), goods: share(g.goods) },
+      topItems: items.slice(0, 5)
+    };
+  }
+
+  function personalBenchmark(annualKg) {
+    var b = F.BENCHMARK.personalAnnual;
+    return {
+      benchmark: b,
+      ratio: b > 0 ? annualKg / b : 0,
+      delta: annualKg - b
+    };
+  }
+
+  /* 减排建议：每条都用当前输入算潜在年减排量，不写死结论。 */
+  function suggestions(input, emission) {
+    var s = input || PERSONAL_DEFAULT;
+    var e = emission || personalEmission(s);
+    var out = [];
+
+    var carKm = num(s.travel.car), metroKm = num(s.travel.metro), busKm = num(s.travel.bus);
+    if (carKm > 0) {
+      var shift = carKm * 0.3;
+      var saveCar = shift * (MAP.car.v - MAP.metro.v) * 12;
+      out.push({
+        id: 'car-to-metro',
+        title: '把三成驾车里程换乘轨道 / 公交',
+        detail: '每月 ' + Math.round(shift) + ' km 改乘轨道交通，按 0.17 与 0.041 kgCO₂/km 的差值计算。',
+        save: saveCar, level: '中'
+      });
+    }
+
+    var meat = num(s.food.beef) + num(s.food.pork) + num(s.food.poultry);
+    if (meat > 0) {
+      var meatKg = (num(s.food.beef) * 60 + num(s.food.pork) * 7.2 + num(s.food.poultry) * 6.1);
+      out.push({
+        id: 'less-beef',
+        title: '每周两天素食，牛肉减半',
+        detail: '肉类结构里牛肉占比最高时收益最大；按现有肉类排放的 35% 折算可减量。',
+        save: meatKg * 0.35 * 12, level: '易'
+      });
+    }
+
+    var elec = num(s.home.elec);
+    if (elec > 0) {
+      out.push({
+        id: 'elec-26',
+        title: '空调 26 ℃、待机断电',
+        detail: '按家庭月度用电 8% 的降幅估算，乘 0.5703 kgCO₂/kWh 的电网因子。',
+        save: elec * 0.08 * MAP.elec.v * 12, level: '易'
+      });
+    }
+
+    var paper = num(s.goods.paper);
+    if (paper > 0) {
+      out.push({
+        id: 'paper-double',
+        title: 'A4 双面打印、无纸化归档',
+        detail: '纸张用量减半，单张 5 gCO₂e。',
+        save: paper * 0.5 * MAP.paper.v * 12, level: '易'
+      });
+    }
+
+    var bottle = num(s.goods.bottle);
+    if (bottle > 0) {
+      out.push({
+        id: 'cup',
+        title: '自带水杯与餐具',
+        detail: '一次性 PET 瓶减少 80%，单瓶 0.082 kgCO₂e。',
+        save: bottle * 0.8 * MAP.bottle.v * 12, level: '易'
+      });
+    }
+
+    var clothKg = (num(s.goods.tshirt) * MAP.tshirt.v + num(s.goods.pants) * MAP.pants.v + num(s.goods.coat) * MAP.coat.v);
+    if (clothKg > 0) {
+      out.push({
+        id: 'cloth-life',
+        title: '衣物延寿一年、优先二手',
+        detail: '新购量减少 40%，按现有服装隐含碳折算。',
+        save: clothKg * 0.4, level: '中'
+      });
+    }
+
+    var bikeKm = num(s.travel.bike);
+    var bikeTarget = Math.max(120, bikeKm * 2);
+    out.push({
+      id: 'active-travel',
+      title: '5 km 内通勤改骑行 / 步行',
+      detail: '把每月骑行里程提到 ' + Math.round(bikeTarget) + ' km，替代小汽车出行。',
+      save: Math.max(0, (bikeTarget - bikeKm)) * MAP.car.v * 12, level: '中'
+    });
+
+    if (e.groups.food > 0) {
+      out.push({
+        id: 'food-waste',
+        title: '按需备餐，减少 10% 食物浪费',
+        detail: '食物从生产到餐桌的隐含碳按现有食物排放的 10% 折算。',
+        save: e.groups.food * 0.1 * 12, level: '中'
+      });
+    }
+
+    out = out.filter(function (x) { return x.save > 0; });
+    out.sort(function (a, b) { return b.save - a.save; });
+    out.forEach(function (x, i) { x.rank = i + 1; x.points = pointsFromCarbonKg(x.save); });
+    return out;
+  }
+
+  function suggestionsTotal(list) {
+    return list.reduce(function (s, x) { return s + x.save; }, 0);
+  }
+
+  /* ---------------- 企业碳账本 ---------------- */
+
+  var ENTERPRISE_DEFAULT = {
+    name: '示例企业（机械制造）',
+    output: 5000,      // 万元产值
+    employees: 300,
+    sector: 'machinery',
+    rows: [
+      { id: 'r1', scope: 1, fk: 'gas', qty: 12000, note: '锅炉与食堂天然气' },
+      { id: 'r2', scope: 1, fk: 'gasoline', qty: 2000, note: '公务车汽油' },
+      { id: 'r3', scope: 1, fk: 'diesel', qty: 1500, note: '厂内叉车与货车' },
+      { id: 'r4', scope: 2, fk: 'elec', qty: 1200000, note: '外购电力（生产+办公）' },
+      { id: 'r5', scope: 3, fk: 'commute', qty: 1500000, note: '员工通勤 300 人 × 20 km × 250 工作日' },
+      { id: 'r6', scope: 3, fk: 'freight', qty: 200000, note: '上游原材料公路运输' },
+      { id: 'r7', scope: 3, fk: 'flight', qty: 60000, note: '差旅航空' },
+      { id: 'r8', scope: 3, fk: 'paper', qty: 20000, note: '办公用纸' }
+    ]
+  };
+
+  function enterpriseRows(rows) {
+    var list = (rows || []).map(function (r) {
+      var f = MAP[r.fk] || { v: 0, name: r.fk || '自定义', unit: '-' };
+      var kg = num(r.qty) * f.v;
+      return {
+        id: r.id, scope: r.scope, fk: r.fk, qty: num(r.qty), note: r.note || '',
+        name: f.name, unit: f.unit, factor: f.v, kg: kg, t: kg / 1000
+      };
+    });
+    return list;
+  }
+
+  function enterpriseSummary(model) {
+    var m = model || ENTERPRISE_DEFAULT;
+    var list = enterpriseRows(m.rows);
+    var total = 0, byScope = { 1: 0, 2: 0, 3: 0 };
+    list.forEach(function (r) {
+      total += r.t;
+      byScope[r.scope] = (byScope[r.scope] || 0) + r.t;
+    });
+
+    var output = num(m.output);
+    var intensity = output > 0 ? total / output : 0;
+
+    var sector = null;
+    for (var i = 0; i < F.SECTORS.length; i++) if (F.SECTORS[i].k === m.sector) sector = F.SECTORS[i];
+    var bench = sector ? sector.v : 0;
+    var freeQuota = output * bench;
+    var gap = total - freeQuota;
+
+    var sorted = list.slice().sort(function (a, b) { return b.t - a.t; });
+    var acc = 0;
+    var pareto = sorted.map(function (r) {
+      acc += r.t;
+      return { name: r.name, note: r.note, t: r.t, share: total > 0 ? r.t / total : 0, cum: total > 0 ? acc / total : 0 };
+    });
+
+    var perCapita = num(m.employees) > 0 ? total * 1000 / num(m.employees) : 0;
+
+    return {
+      rows: list, total: total, byScope: byScope,
+      output: output, intensity: intensity,
+      sector: sector, benchmark: bench, freeQuota: freeQuota, gap: gap,
+      ratio: bench > 0 ? intensity / bench : 0,
+      pareto: pareto, perCapita: perCapita,
+      emissionLevel: intensity === 0 ? 'none' : (intensity <= bench * 0.85 ? 'low' : (intensity <= bench * 1.1 ? 'mid' : 'high'))
+    };
+  }
+
+  /* ---------------- 积分 / 兑换 ---------------- */
+
+  function pointsFromCarbonKg(kg) {
+    return Math.max(0, Math.round(num(kg) * F.POINTS.perKg));
+  }
+
+  function redeemPlan(points, items) {
+    var left = Math.max(0, Math.round(num(points)));
+    var list = (items || F.POINTS.items).map(function (it) {
+      var count = it.cost > 0 ? Math.floor(left / it.cost) : 0;
+      left -= count * it.cost;
+      return {
+        k: it.k, name: it.name, cost: it.cost, kind: it.kind,
+        count: count, spent: count * it.cost,
+        credit: it.kind === 'carbon' ? count * (it.credit || 0) : 0,
+        note: it.note
+      };
+    });
+    var spent = list.reduce(function (s, x) { return s + x.spent; }, 0);
+    var credit = list.reduce(function (s, x) { return s + x.credit; }, 0);
+    var ocean = list.filter(function (x) { return x.k === 'ocean'; })
+      .reduce(function (s, x) { return s + x.count; }, 0);
+    return { list: list, spent: spent, left: left, credit: credit, oceanKg: ocean };
+  }
+
+  /* ---------------- 图表数据 ---------------- */
+
+  var SEASON = [0.92, 0.88, 0.9, 0.94, 0.98, 1.08, 1.14, 1.13, 1.02, 0.97, 1.0, 1.04];
+
+  function monthlyTrend(monthlyKg) {
+    var m = num(monthlyKg);
+    return SEASON.map(function (w, i) {
+      return { month: (i + 1) + '月', value: m * w, index: i };
+    });
+  }
+
+  /* ---------------- 格式化 ---------------- */
+
+  function fmt(n, d) {
+    var v = typeof n === 'number' ? n : parseFloat(n);
+    if (!isFinite(v)) v = 0;
+    var digits = typeof d === 'number' ? d : 1;
+    return v.toLocaleString('zh-CN', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  }
+  function fmtKg(kg) {
+    var v = typeof kg === 'number' ? kg : parseFloat(kg);
+    if (!isFinite(v)) v = 0;
+    if (v >= 1000) return fmt(v / 1000, 2) + ' t';
+    return fmt(v, v < 10 ? 2 : 0) + ' kg';
+  }
+  function fmtPct(x, d) { return fmt(num(x) * 100, typeof d === 'number' ? d : 1) + '%'; }
+
+  var API = {
+    PERSONAL_DEFAULT: PERSONAL_DEFAULT,
+    ENTERPRISE_DEFAULT: ENTERPRISE_DEFAULT,
+    FOOD_KEYS: FOOD_KEYS, HOME_KEYS: HOME_KEYS, TRAVEL_KEYS: TRAVEL_KEYS, GOODS_KEYS: GOODS_KEYS,
+    personalEmission: personalEmission,
+    personalBenchmark: personalBenchmark,
+    suggestions: suggestions,
+    suggestionsTotal: suggestionsTotal,
+    enterpriseRows: enterpriseRows,
+    enterpriseSummary: enterpriseSummary,
+    pointsFromCarbonKg: pointsFromCarbonKg,
+    redeemPlan: redeemPlan,
+    monthlyTrend: monthlyTrend,
+    fmt: fmt, fmtKg: fmtKg, fmtPct: fmtPct,
+    clone: clone, num: num
+  };
+
+  global.CS = global.CS || {};
+  global.CS.calc = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- core/charts.js -->
+<script>
+/* 轻量 SVG 图表：环形、柱状、横条（可带对标标记）、趋势。
+   全部返回字符串，无第三方依赖，颜色取自 CSS 变量（dark 主题由变量自动跟随）。 */
+(function (global) {
+  'use strict';
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function niceMax(v) {
+    var n = Number(v);
+    if (!isFinite(n) || n <= 0) return 1;
+    var exp = Math.floor(Math.log(n) / Math.LN10);
+    var base = Math.pow(10, exp);
+    var f = n / base;
+    var steps = [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10];
+    for (var i = 0; i < steps.length; i++) {
+      if (f <= steps[i] + 1e-9) return steps[i] * base;
+    }
+    return 10 * base;
+  }
+
+  function fnum(v, d) {
+    var n = Number(v);
+    if (!isFinite(n)) n = 0;
+    var digits = typeof d === 'number' ? d : 1;
+    return n.toLocaleString('zh-CN', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+  }
+
+  var PALETTE = ['var(--c1)', 'var(--c2)', 'var(--c3)', 'var(--c4)', 'var(--c5)', 'var(--c6)'];
+  function color(i) { return PALETTE[i % PALETTE.length]; }
+
+  /* ---------- 环形图 ---------- */
+  function donut(items, opts) {
+    var o = opts || {};
+    var size = o.size || 196;
+    var thick = o.thickness || 24;
+    var r = (size - thick) / 2;
+    var cx = size / 2, cy = size / 2;
+    var C = 2 * Math.PI * r;
+    var total = (items || []).reduce(function (s, it) { return s + Math.max(0, Number(it.value) || 0); }, 0);
+
+    var svg = ['<svg class="chart donut" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' + esc(o.aria || '构成占比环形图') + '" width="' + size + '" height="' + size + '">'];
+    svg.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="var(--line-soft)" stroke-width="' + thick + '"/>');
+
+    if (total > 0) {
+      var acc = 0;
+      (items || []).forEach(function (it, i) {
+        var v = Math.max(0, Number(it.value) || 0);
+        if (v <= 0) return;
+        var len = (v / total) * C;
+        var dash = Math.max(0, len - 2);
+        svg.push('<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + (it.color || color(i)) +
+          '" stroke-width="' + thick + '" stroke-dasharray="' + dash.toFixed(2) + ' ' + (C - dash).toFixed(2) +
+          '" stroke-dashoffset="' + (-acc).toFixed(2) + '" transform="rotate(-90 ' + cx + ' ' + cy + ')" stroke-linecap="butt">' +
+          '<title>' + esc(it.label + '：' + fnum(v, 2) + '（' + ((v / total) * 100).toFixed(1) + '%）') + '</title></circle>');
+        acc += len;
+      });
+    }
+
+    if (o.centerLabel || o.centerValue) {
+      svg.push('<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" font-size="20" font-weight="700" fill="var(--txt)" class="val">' + esc(o.centerValue || '') + '</text>');
+      svg.push('<text x="' + cx + '" y="' + (cy + 18) + '" text-anchor="middle" font-size="10.5" fill="var(--dim)">' + esc(o.centerLabel || '') + '</text>');
+    }
+    svg.push('</svg>');
+    return svg.join('');
+  }
+
+  /* ---------- 竖向柱状图 ---------- */
+  function bars(items, opts) {
+    var o = opts || {};
+    var W = 640, H = o.height || 230;
+    var padL = 44, padR = 12, padT = 16, padB = 30;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var list = items || [];
+    var max = niceMax(Math.max.apply(null, list.map(function (d) { return Number(d.value) || 0; }).concat([0])) || 1);
+    var n = Math.max(1, list.length);
+    var step = iw / n;
+    var bw = Math.min(46, step * 0.58);
+
+    var svg = ['<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria || '柱状图') + '" preserveAspectRatio="xMidYMid meet">'];
+    for (var t = 0; t <= 4; t++) {
+      var y = padT + ih - (ih * t) / 4;
+      svg.push('<line class="gridline" x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke-dasharray="' + (t === 0 ? '0' : '3 4') + '"/>');
+      svg.push('<text x="' + (padL - 8) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end" font-size="10" class="val">' + esc(fnum((max * t) / 4, max < 10 ? 1 : 0)) + '</text>');
+    }
+
+    list.forEach(function (d, i) {
+      var v = Math.max(0, Number(d.value) || 0);
+      var h = max > 0 ? (v / max) * ih : 0;
+      var x = padL + step * i + (step - bw) / 2;
+      var yTop = padT + ih - h;
+      svg.push('<rect x="' + x.toFixed(1) + '" y="' + yTop.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(1, h).toFixed(1) +
+        '" rx="4" fill="' + (d.color || 'var(--c1)') + '"><title>' + esc(d.label + '：' + fnum(v, 2)) + '</title></rect>');
+      if (o.showValue !== false) {
+        svg.push('<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (yTop - 5).toFixed(1) + '" text-anchor="middle" font-size="9.5" class="val" fill="var(--dim)">' + esc(fnum(v, v < 10 ? 1 : 0)) + '</text>');
+      }
+      svg.push('<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="9.5">' + esc(d.label) + '</text>');
+    });
+
+    svg.push('</svg>');
+    return svg.join('');
+  }
+
+  /* ---------- 横向条（带可选对标标记）---------- */
+  function hbars(items, opts) {
+    var o = opts || {};
+    var W = 640;
+    var list = items || [];
+    var rowH = o.rowH || 30;
+    var H = Math.max(70, list.length * rowH + 26);
+    var padL = o.labelWidth || 132, padR = o.valueWidth || 96, padT = 8;
+    var iw = W - padL - padR;
+    var max = niceMax(Math.max.apply(null, list.map(function (d) {
+      return Math.max(Number(d.value) || 0, Number(d.marker) || 0);
+    }).concat([0])) || 1);
+
+    var svg = ['<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria || '横向条形图') + '" preserveAspectRatio="xMidYMid meet">'];
+    list.forEach(function (d, i) {
+      var y = padT + i * rowH;
+      var v = Math.max(0, Number(d.value) || 0);
+      var w = max > 0 ? (v / max) * iw : 0;
+      svg.push('<text x="0" y="' + (y + rowH / 2 + 3.5) + '" font-size="10.5">' + esc(d.label) + '</text>');
+      svg.push('<rect x="' + padL + '" y="' + (y + 7) + '" width="' + iw + '" height="10" rx="5" fill="var(--line-soft)"/>');
+      svg.push('<rect x="' + padL + '" y="' + (y + 7) + '" width="' + Math.max(1, w).toFixed(1) + '" height="10" rx="5" fill="' + (d.color || 'var(--c1)') + '"><title>' + esc(d.label + '：' + fnum(v, 2)) + '</title></rect>');
+      if (d.marker != null && isFinite(Number(d.marker))) {
+        var mx = padL + (Number(d.marker) / max) * iw;
+        svg.push('<line x1="' + mx.toFixed(1) + '" x2="' + mx.toFixed(1) + '" y1="' + (y + 2) + '" y2="' + (y + 22) + '" stroke="var(--c3)" stroke-width="1.6" stroke-dasharray="3 2"/>');
+      }
+      svg.push('<text x="' + (padL + iw + 6) + '" y="' + (y + rowH / 2 + 3.5) + '" font-size="10" class="val">' + esc(fnum(v, 2) + (o.unit || '')) + '</text>');
+    });
+    svg.push('</svg>');
+    return svg.join('');
+  }
+
+  /* ---------- 趋势面积图 ---------- */
+  function trend(items, opts) {
+    var o = opts || {};
+    var W = 640, H = o.height || 200;
+    var padL = 44, padR = 14, padT = 14, padB = 26;
+    var iw = W - padL - padR, ih = H - padT - padB;
+    var list = items || [];
+    var max = niceMax(Math.max.apply(null, list.map(function (d) { return Number(d.value) || 0; }).concat([1])));
+    var n = Math.max(1, list.length - 1);
+
+    function px(i) { return padL + (iw * i) / n; }
+    function py(v) { return padT + ih - (Math.max(0, Number(v) || 0) / max) * ih; }
+
+    var svg = ['<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria || '趋势图') + '" preserveAspectRatio="xMidYMid meet">'];
+    for (var t = 0; t <= 4; t++) {
+      var y = padT + ih - (ih * t) / 4;
+      svg.push('<line class="gridline" x1="' + padL + '" x2="' + (W - padR) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke-dasharray="' + (t === 0 ? '0' : '3 4') + '"/>');
+      svg.push('<text x="' + (padL - 8) + '" y="' + (y + 3.5).toFixed(1) + '" text-anchor="end" font-size="10" class="val">' + esc(fnum((max * t) / 4, 0)) + '</text>');
+    }
+
+    var pts = list.map(function (d, i) { return px(i).toFixed(1) + ',' + py(d.value).toFixed(1); });
+    if (pts.length) {
+      var area = 'M' + px(0).toFixed(1) + ',' + (padT + ih) + ' L' + pts.join(' L') + ' L' + px(list.length - 1).toFixed(1) + ',' + (padT + ih) + ' Z';
+      svg.push('<path d="' + area + '" fill="var(--c1)" fill-opacity="0.13" stroke="none"/>');
+      svg.push('<polyline points="' + pts.join(' ') + '" fill="none" stroke="var(--c1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>');
+      list.forEach(function (d, i) {
+        if (list.length <= 13) {
+          svg.push('<circle cx="' + px(i).toFixed(1) + '" cy="' + py(d.value).toFixed(1) + '" r="2.6" fill="var(--panel)" stroke="var(--c1)" stroke-width="1.6"><title>' + esc(d.month + '：' + fnum(d.value, 1) + (o.unit || ' kg')) + '</title></circle>');
+        }
+        svg.push('<text x="' + px(i).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="9">' + esc(d.month) + '</text>');
+      });
+    }
+    svg.push('</svg>');
+    return svg.join('');
+  }
+
+  function legend(items) {
+    return '<div class="legend">' + (items || []).map(function (it, i) {
+      return '<span><i style="background:' + (it.color || color(i)) + '"></i>' + esc(it.label) + '</span>';
+    }).join('') + '</div>';
+  }
+
+  var API = { donut: donut, bars: bars, hbars: hbars, trend: trend, legend: legend, esc: esc, niceMax: niceMax, color: color, fnum: fnum };
+  global.CS = global.CS || {};
+  global.CS.charts = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- core/store.js -->
+<script>
+/* 状态持久化与导出工具。localStorage 不可用时自动退化为内存态。 */
+(function (global) {
+  'use strict';
+
+  var KEY = 'carbon-seeker:state:v1';
+  var memory = null;
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  function defaults(calc) {
+    return {
+      view: 'overview',
+      theme: 'light',
+      personal: clone(calc.PERSONAL_DEFAULT),
+      enterprise: clone(calc.ENTERPRISE_DEFAULT),
+      points: null
+    };
+  }
+
+  function merge(base, patch) {
+    if (!patch || typeof patch !== 'object') return base;
+    Object.keys(patch).forEach(function (k) {
+      var v = patch[k];
+      if (v && typeof v === 'object' && !Array.isArray(v) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) {
+        merge(base[k], v);
+      } else {
+        base[k] = v;
+      }
+    });
+    return base;
+  }
+
+  function load(calc) {
+    var base = defaults(calc);
+    var raw = null;
+    try { raw = global.localStorage ? global.localStorage.getItem(KEY) : memory; } catch (err) { raw = memory; }
+    if (!raw) return base;
+    try {
+      var parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      return merge(base, parsed);
+    } catch (err) {
+      return base;
+    }
+  }
+
+  function save(state) {
+    var raw = JSON.stringify({ view: state.view, theme: state.theme, personal: state.personal, enterprise: state.enterprise, points: state.points });
+    memory = raw;
+    try { if (global.localStorage) global.localStorage.setItem(KEY, raw); } catch (err) { /* 隐私模式下静默 */ }
+  }
+
+  function reset(calc) {
+    var base = defaults(calc);
+    try { if (global.localStorage) global.localStorage.removeItem(KEY); } catch (err) { /* noop */ }
+    memory = null;
+    return base;
+  }
+
+  function download(filename, text, mime) {
+    var blob = new Blob([text], { type: mime || 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(url); a.remove(); }, 500);
+  }
+
+  function stamp(d) {
+    var t = d || new Date();
+    function p(n) { return n < 10 ? '0' + n : '' + n; }
+    return t.getFullYear() + p(t.getMonth() + 1) + p(t.getDate()) + '-' + p(t.getHours()) + p(t.getMinutes());
+  }
+
+  var API = { KEY: KEY, load: load, save: save, reset: reset, download: download, stamp: stamp, clone: clone };
+  global.CS = global.CS || {};
+  global.CS.store = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- data/project.js -->
+<script>
+/* 项目事实数据：全部来自《碳寻计划书12.docx》《碳寻省赛.pptx》与
+   《第九届河北省“互联网+”大学生创新创业大赛拟获奖项目名单》。
+   页面上的每个数字都能回到这三份原始材料，不做二次创作。 */
+(function (global) {
+  'use strict';
+
+  var P = {
+    meta: {
+      name: '碳寻',
+      en: 'Carbon Seeker',
+      tagline: '企业碳减排管理的碳应用平台',
+      oneLine: '个人碳足迹记录 + 企业碳账本 + 碳排放咨询与人才培养，用一套积分把减碳变成可兑现的事。',
+      school: '河北经贸大学',
+      group: '本科生创意组',
+      contest: '2023 年“互联网+”大学生创新创业大赛',
+      award: '第九届河北省“互联网+”大学生创新创业大赛 铜奖',
+      awardDetail: '高教主赛道 · 外国语学院 · 2023',
+      year: '2023'
+    },
+
+    /* 政策与舆论时间轴（计划书表 3-1） */
+    timeline: [
+      { t: '2020.09', d: '我国明确提出 2030 年前碳达峰、2060 年前碳中和的目标' },
+      { t: '2021.10', d: '中共中央、国务院印发《关于完整准确全面贯彻新发展理念做好碳达峰碳中和工作的意见》' },
+      { t: '2021.10', d: '“碳中和”“碳达峰”入选 2021 年度中国媒体十大流行语' },
+      { t: '2021.12', d: '入选 2021 年度十大流行语、十大新词语' },
+      { t: '2022.01', d: '入选《中国品牌》评选的 2021 年度品牌十大热词' },
+      { t: '2023.03', d: '生态环境部一号文件：《2021、2022 年度全国碳排放权交易配额总量设定与分配实施方案（发电行业）》' }
+    ],
+
+    /* PEST */
+    pest: [
+      { k: 'P', name: '政治', items: [
+        '《巴黎气候协定》把全球升温控制在 2 ℃ 以内、努力争取 1.5 ℃，本世纪下半叶实现净零排放。',
+        '2023 年生态环境部一号文件加快推进全国碳排放权交易市场建设，做好配额预分配、调整、核定、预支、清缴。',
+        '“十四五”规划提出以碳强度控制为主、碳排放总量控制为辅，支持有条件的地方和重点行业率先达峰。'
+      ] },
+      { k: 'E', name: '经济', items: [
+        '2023 年政府工作报告：国内生产总值增至 121 万亿元，五年年均增长 5.2%；居民人均可支配收入年均增长 5.1%。',
+        '中国环保行业总产值由 2017 年 6.87 万亿元增至 2023 年接近 14 万亿元（前瞻产业研究院）。',
+        '节能减排与新能源长期获得政策与补贴支持，市场化机制是“双碳”目标的前置条件。'
+      ] },
+      { k: 'S', name: '社会', items: [
+        '欧洲委员会调查：75% 受访者对环保产品评价更高；尼尔森调查：83% 受访者更关注产品环保性。',
+        '《2030 年前碳达峰行动方案》把绿色低碳科技创新列为“碳达峰十大行动”之一，企业需要重构绿色竞争优势。',
+        '低碳概念进入零售终端，消费者对“可持续”的认知度快速提升。'
+      ] },
+      { k: 'T', name: '技术', items: [
+        '互联网与新媒体成熟，线上办理业务的便捷性让“云服务”成为常态。',
+        '企业网格化管理的智慧环保管控平台已有落地案例。',
+        '碳市场作为新兴领域，线上碳核算与碳计算平台的出现是必然。'
+      ] }
+    ],
+
+    /* 市场痛点（PPT 第 5 页 / 计划书 3.3） */
+    pains: [
+      { t: '产品与设备研发尚不成熟', d: '上游设备领域接近充分竞争，行业集中度低、市场化程度低，低水平运营普遍。', fix: '用轻量小程序先解决个人碳足迹记录，再向企业侧延伸。' },
+      { t: '专业人才缺口大', d: '能驾驭大型环境工程的技术人才稀缺，高等教育供给不足，人才结构性失衡。', fix: '线上课程 + 线下入企调研，帮企业培养自己的碳咨询师。' },
+      { t: '融资能力弱、运营模式待完善', d: '投资周期长、回报慢、受政策影响大，服务企业普遍规模小、水平低。', fix: '团队自研、启动成本低，用个人流量带动企业服务。' }
+    ],
+
+    /* SWOT（计划书第四章） */
+    swot: {
+      s: { name: '优势 Strength', items: [
+        '紧跟政策热点且处于初创期，团队小、迭代快，容易在风口期试错。',
+        '已与省内 7 家民营企业签订合作意向书，落地流程获得初步支持。',
+        '启动成本低，主要投入在推广；与传播公司合作降低获客成本。',
+        '美工、平台布局与程序开发均可内部完成，不依赖外包。'
+      ] },
+      w: { name: '劣势 Weakness', items: [
+        '团队对碳市场仍处于学习阶段，本地市场调研渠道有限。',
+        '启动资金短缺，个性化定制开发费用难以独自承担。',
+        '成员均为在校生，缺少实际组织管理经验，管理模式尚未定型。'
+      ] },
+      o: { name: '机会 Opportunity', items: [
+        '《碳排放权交易管理办法（试行）》等政策为业务提供法规基础。',
+        '庞大的排放总量是碳市场的基础，配额盈余可交易，与积分机制天然契合。',
+        '“碳排放管理员”已列入国家职业序列，人才培训需求明确。',
+        '低碳概念频频出圈，消费者认知度快速提升。'
+      ] },
+      t: { name: '威胁 Threat', items: [
+        '政策稳定性与可操作性不足，部门与地方执行存在碎片化。',
+        '企业主体范围较窄，目前仅纳入发电等少数行业。',
+        '市场活跃度不高，企业信息不透明，平台运行难度大。'
+      ] }
+    },
+
+    /* 碳市场数据（计划书 3.2） */
+    market: {
+      rows: [
+        { name: '全国统一碳市场（至 2022-11-25）', amount: '89.65 亿元', volume: '20 670.04 万吨' },
+        { name: '全国碳市场首个履约期（至 2021-12-31）', amount: '76.61 亿元', volume: '1.79 亿吨' }
+      ],
+      facts: [
+        '首个履约期纳入发电企业 2 162 家，履约完成率 99.5%。',
+        '按年配额 45 亿吨计，首个履约期总换手率约 2%。',
+        '工业部门排放占总量约 70%，是“双碳”目标的关键一环。',
+        '拟纳入钢铁、电力、有色、石化、化工、建材、航空、造纸八大行业。'
+      ]
+    },
+
+    /* 产品构成（计划书 5.2） */
+    products: [
+      { k: 'personal', name: '个人模块', items: [
+        '碳足迹记录：衣食住行四类，拍照识别食物碳含量，水电煤气按用量折算。',
+        '碳积分：签到、微信步数、观看广告获得积分，可兑换全新与二手商品。',
+        '公益环保：与支付宝、微信合作设置排行榜；培育螺旋藻、捡拾海洋垃圾。',
+        '社交：通讯录互加好友，绿色行为可分享。'
+      ] },
+      { k: 'enterprise', name: '企业模块', items: [
+        '企业碳账本：安排人员填报碳足迹数据，掌握上下游碳消耗。',
+        '碳咨询师培训：线上课程 + 线下实地调研入企授课。',
+        '形象提升：员工减碳量计入绩效考核，助力碳中和企业认证。',
+        '沟通平台：企业之间交流，未来开设“碳咨询师”专区。'
+      ] },
+      { k: 'member', name: '会员体系', items: [
+        '身份特权：专属顶级域名、VIP 身份标识。',
+        '装扮特权：首页自定义皮肤、专属头像框。',
+        '功能特权：好友上限 1000 人、隐身查看。',
+        '兑换优惠：会员兑换折扣，限时限量商品优先购买。'
+      ] }
+    ],
+
+    /* 盈利模式（计划书表 5-1） */
+    revenue: {
+      rows: [
+        { mode: '广告合作', feature: '最经典、最早的变现方式', eg: '微博' },
+        { mode: '电商变现', feature: '最高效、最主要的变现方式', eg: '抖音、快手、淘宝' },
+        { mode: '线下活动', feature: '需举办者与粉丝有强粘合力', eg: '环保活动' },
+        { mode: '付费进群', feature: '最容易实现的变现方式', eg: '粉丝群' }
+      ],
+      detail: '以流量变现为主：广告按点击、转发等指标与企业分成；自营电商通过内容导流，每带来一位消费者给予积分或现金奖励。'
+    },
+
+    /* STP 与调研（计划书 6.2，样本 519 份） */
+    stp: {
+      sample: 519,
+      education: [
+        { label: '初中及以下', n: 22, p: 4.24 }, { label: '高中/中专/技校', n: 43, p: 8.29 },
+        { label: '大专', n: 84, p: 16.18 }, { label: '本科', n: 307, p: 59.15 }, { label: '硕士及以上', n: 63, p: 12.14 }
+      ],
+      age: [
+        { label: '18 岁以下', n: 81, p: 15.61 }, { label: '18–30 岁', n: 266, p: 51.25 },
+        { label: '31–40 岁', n: 98, p: 18.88 }, { label: '40 岁以上', n: 74, p: 14.26 }
+      ],
+      city: [
+        { label: '北上广深', n: 109, p: 21.0 }, { label: '省会与直辖市', n: 202, p: 38.92 },
+        { label: '中小城市及县城', n: 141, p: 27.17 }, { label: '乡镇及农村', n: 67, p: 12.91 }
+      ],
+      conclusion: '按地理细分锁定一二线城市，按人口细分对准 18–30 岁受教育程度较高、环保意识较强的人群。'
+    },
+
+    /* 财务（计划书 8.1、8.2、PPT 第 16 页） */
+    finance: {
+      capital: { total: 15, student: 9, external: 6, studentShare: 60, externalShare: 40, note: '拟注册资本 15 万元，学生团队投入 9 万元（60%），外部融资 6 万元（40%），学生团队绝对控股。' },
+      use: [
+        { item: '开发人员（Android）', amount: 1.4 }, { item: '开发人员（iOS）', amount: 2.0 },
+        { item: '后台开发（Java / PHP）', amount: 1.3 }, { item: '产品经理', amount: 0.6 },
+        { item: '设计经理', amount: 0.5 }, { item: '运营渠道', amount: 1.5 },
+        { item: '租赁费用', amount: 0.8 }, { item: '办公用品', amount: 0.4 },
+        { item: '水电费用', amount: 0.5 }, { item: '推广费用', amount: 1.0 }
+      ],
+      useTotal: 10.0,
+      forecast: [
+        { year: '2023', users: '5 万人', userRevenue: 32.71, firms: '80 家', firmRevenue: 10.0, total: 42.71 },
+        { year: '2024', users: '50 万人', userRevenue: 360.5, firms: '150 家', firmRevenue: 350.0, total: 710.5 }
+      ],
+      funding: [
+        { stage: '种子轮（2023）', amount: '15 万元', note: '项目参与人自行筹集' },
+        { stage: 'Pre-A 轮（2026）', amount: '60 万元', note: '占股 20%，用于平台开发、创新研究与规模扩张' }
+      ],
+      assumptions: [
+        '会计年度按 360 天计，记账本位币为人民币。',
+        '应收账款坏账准备率 0.3%；固定资产残值率 10%，平均年限法折旧。',
+        '无形资产按 10 年摊销；第二年按盈利 30% 分红，第三年起按税后利润 50% 分红。',
+        '每年按税后利润 10% 提取盈余公积。'
+      ]
+    },
+
+    /* 团队（计划书第十一章 / PPT 14–15） */
+    team: [
+      { name: '董传健', role: 'CEO', info: '2020 级外国语学院，连续创业者；第一作者发表《双C视阈下探究传统能源基地的转型和嬗变》。' },
+      { name: '袁美冉', role: '总经理', info: '2020 级财政税务学院税收学；走访调研石家庄市场，对接多家企业取得合作意向书。' },
+      { name: '陈苗', role: '营销总监', info: '2020 级工商管理学院；负责小程序内容运营、新媒体运营与策划。' },
+      { name: '孙一赫', role: '财务总监', info: '2020 级财政税务学院；负责财务假设、经营预测与报表分析。' },
+      { name: '白泽栋', role: '人力总监', info: '2020 级工商管理学院；负责宣传标语与客户管理，持续导入资源。' },
+      { name: '杨一漫', role: '产品总监', info: '2020 级外国语学院；掌握商品运营流程，推动平台功能完善。' },
+      { name: '马骏菁', role: '设计总监', info: '2022 级旅游学院；负责视频剪辑与积分兑换物设计。' },
+      { name: '张玉露', role: '营销总监', info: '2022 级外国语学院；外文文献提炼与海外推广准备。' },
+      { name: '黄思婷', role: '运营总监', info: '2021 级管理科学与工程学院；负责平台运营更新与用户反馈闭环。' }
+    ],
+    mentors: [
+      { name: '蔡燕', role: '副教授 · 硕士生导师', info: '第一作者发表《“双碳”视角下我国对外贸易发展面临的挑战及对策分析》；主持《“双碳”目标下河北省钢铁产业碳排放的影响因素与优化路径》省级立项。' },
+      { name: '赵红霞', role: '教授 · 商学院硕导', info: '主讲国际贸易、国际贸易实务；主编教材《国际贸易》，多次指导双创赛事。' },
+      { name: '张润', role: '外国语学院院长 · 教授', info: '主持省厅级项目 8 项，发表学术文章 40 余篇，把握项目研究方向。' },
+      { name: '方源涛', role: '青阳惠生（上海）文化有限公司 董事长兼 CEO', info: '中国科技咨询协会导师工委会创导实践基地创业导师；第十四届 iCAN 国际创新创业大赛江浙沪赛区评委。' }
+    ],
+
+    /* 合作与成果 */
+    partners: [
+      { name: '河北三腾电线电缆有限公司', note: '电气机械和器材制造' },
+      { name: '文安县新前进机械厂', note: '机械制造' },
+      { name: '廊坊琮闰线缆有限公司', note: '市值 188 万元 · 电气机械' },
+      { name: '文安县京新钢材有限公司', note: '市值 1000 万元 · 黑色金属冶炼' },
+      { name: '廊坊市光耀油漆厂', note: '市值 100 万元 · 化学原料与化学制品' },
+      { name: '河北格瑞尼雷特机械科技有限公司', note: '机械科技' },
+      { name: '保定柯新文化传播有限公司', note: '品牌传播合作' }
+    ],
+    results: [
+      { k: '7 家', short: '合作意向企业', v: '已签合作意向书的省内民营企业' },
+      { k: '铜奖', short: '省赛获奖', v: '第九届河北省“互联网+”大赛高教主赛道' },
+      { k: '90 人次', short: '带动就业', v: '项目直接与间接带动' },
+      { k: '1000+', short: '平台访问', v: '平台浏览量' },
+      { k: '1 篇', short: '学术论文', v: '《双C视阈下探究传统能源基地的转型和嬗变》' },
+      { k: '2 次', short: '实地调研', v: '河北省光伏行业协会、晶澳太阳能、玉星生物' }
+    ],
+    honors: [
+      '第九届河北省“互联网+”大学生创新创业大赛 铜奖（高教主赛道）',
+      '第七届“互联网+”大学生创新创业大赛 校级一等奖',
+      '大学生创新创业训练计划 校级立项并顺利结项',
+      '2022 年“挑战杯” 校级重点培训项目'
+    ],
+
+    /* 风险与对策（计划书第十章） */
+    risks: [
+      { t: '财务风险：初期资金短缺', d: '平台规模小、客群有限，合作企业面对不明朗的碳市场难以承诺充足资金。', s: '以合作企业为主要公关目标，用广告推荐换投资；以个人业务引流，用流量与广告形成 2023—2030 年的资金链。' },
+      { t: '管理风险：制度尚未成形', d: '成员间未形成明确上下级关系，存在分权不清、管理方式不统一的问题。', s: '尽早制定人员分配方案与区域组织结构，规模扩大后降低扁平化，引入奖惩机制。' },
+      { t: '市场风险：活跃度低', d: '碳交易涉及敏感话题，企业信息不透明，平台运行与信息收集都受影响。', s: '向合作企业提供业务试用期并统计态度；企业侧不明朗时，用个人侧业务支撑平台运转。' },
+      { t: '政策风险：准入规则不明', d: '试点市场入场标准低、类型单一，个人参与全国碳市场尚无明确规定。', s: '把碳业务作为长期前景持续投入，提前帮助企业完成碳盘查与能力建设。' }
+    ],
+
+    /* 发展规划（计划书第七章） */
+    plan: [
+      { k: '企业侧', items: ['线上搭建平台了解企业情况并给出培训方向', '成员取得国家认可的碳排放证书后入企实地调研', '按企业问题提供培训建议，深化人才培养', '以员工平台使用数据引入个人绩效考核'] },
+      { k: '个人侧', items: ['记录单车、运动、垃圾分类、商务办公、日常出行减碳', '拍照识别上传，平台核算排碳量并发放积分', '积分兑换商品、参与螺旋藻与海洋垃圾项目', '对接各维度碳普惠运营平台，实现数据透明化'] },
+      { k: '四条业务线', items: ['能源替代：以新能源装备替代传统装备，源头降碳', '节能减排：低碳技术与科技化管理机制', '循环利用：再生资源回收与生产者责任延伸', '环境规划：产业链环境规划与减排方案设计'] }
+    ]
+  };
+
+  global.CS = global.CS || {};
+  global.CS.project = P;
+  if (typeof module !== 'undefined' && module.exports) module.exports = P;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- ui/views.js -->
+<script>
+/* 视图层：每个视图都是纯函数 (state) -> HTML 字符串。
+   交互由 ui/app.js 通过事件委托完成，视图本身不绑定事件。 */
+(function (global) {
+  'use strict';
+
+  var C = global.CS.charts;
+  var K = global.CS.calc;
+  var P = global.CS.project;
+  var F = global.CS.factors;
+  var esc = C.esc;
+  /* 骑行/步行没有独立排放因子（直接排放按 0 计，减排另计抵扣），这里给出展示用元数据 */
+  var ACTIVE = { name: '骑行 / 步行', unit: '人·km', v: 0 };
+  function meta(k) { return F.map[k] || ACTIVE; }
+
+  /* ---------------- 通用小部件 ---------------- */
+
+  function kpi(label, value, unit, delta, cls) {
+    return '<div class="kpi ' + (cls || '') + '">' +
+      '<div class="k">' + esc(label) + '</div>' +
+      '<div class="v">' + esc(value) + (unit ? '<small>' + esc(unit) + '</small>' : '') + '</div>' +
+      (delta ? '<div class="d">' + esc(delta) + '</div>' : '') +
+      '</div>';
+  }
+
+  function field(path, label, value, unit, opts) {
+    var o = opts || {};
+    return '<div class="field">' +
+      '<label for="f-' + esc(path) + '"><span>' + esc(label) + '</span><b>' + esc(unit || '') + '</b></label>' +
+      '<input id="f-' + esc(path) + '" type="number" inputmode="decimal" min="' + (o.min != null ? o.min : 0) + '"' +
+      ' step="' + (o.step || 1) + '" value="' + esc(value) + '" data-bind="' + esc(path) + '"' +
+      ' title="' + esc(o.title || label) + '">' +
+      '</div>';
+  }
+
+  function pageHead(eyebrow, title, desc, actions) {
+    return '<header class="page-head">' +
+      '<div><div class="eyebrow">' + esc(eyebrow) + '</div>' +
+      '<h2>' + title + '</h2>' +
+      '<p>' + desc + '</p></div>' +
+      (actions ? '<div class="page-actions">' + actions + '</div>' : '') +
+      '</header>';
+  }
+
+  function bar(pct, color) {
+    var w = Math.max(0, Math.min(100, pct * 100));
+    return '<div class="bar"><i style="width:' + w.toFixed(1) + '%' + (color ? ';background:' + color : '') + '"></i></div>';
+  }
+
+  function table(headers, rows, opts) {
+    var o = opts || {};
+    return '<div class="table-wrap"><table' + (o.plain ? ' class="plain"' : '') + '>' +
+      '<thead><tr>' + headers.map(function (h) {
+        return '<th' + (h.num ? ' class="num"' : '') + '>' + esc(h.label != null ? h.label : h) + '</th>';
+      }).join('') + '</tr></thead><tbody>' + rows + '</tbody>' +
+      (o.foot ? '<tfoot>' + o.foot + '</tfoot>' : '') +
+      '</table></div>';
+  }
+
+  /* ---------------- 概览 ---------------- */
+
+  function overview(state) {
+    var em = K.personalEmission(state.personal);
+    var sug = K.suggestions(state.personal, em);
+    var ent = K.enterpriseSummary(state.enterprise);
+    var bench = K.personalBenchmark(em.annual);
+    var potential = K.suggestionsTotal(sug);
+
+    var kpis = '<section class="kpis">' +
+      kpi('个人年排放', K.fmt(em.annual / 1000, 2), 'tCO₂e', '参照基准 ' + K.fmt(bench.benchmark / 1000, 1) + ' t', 'hl') +
+      kpi('示例企业年排放', K.fmt(ent.total, 0), 'tCO₂e', '强度 ' + K.fmt(ent.intensity, 3) + ' t/万元') +
+      kpi('可挖掘减碳潜力', K.fmt(potential / 1000, 2), 'tCO₂e/年', '来自 ' + sug.length + ' 条可执行建议') +
+      kpi('绿色积分（可兑现）', K.fmt(K.pointsFromCarbonKg(potential), 0), '分', '1 kg 减排 = 10 分') +
+      '</section>';
+
+    var hero = '<div class="card pad-lg accent">' +
+      '<div class="eyebrow">参照 DAC Workbench 的证据式工作台结构 · 全部计算在本机浏览器完成</div>' +
+      '<h2 style="font-size:26px;line-height:1.35;letter-spacing:-.5px;margin:9px 0 10px">把“排了多少碳”变成一笔算得清、换得掉的账。</h2>' +
+      '<p class="lead">' + esc(P.meta.oneLine) + '</p>' +
+      '<div class="hero-actions">' +
+      '<button class="btn primary" data-go="personal">开始记录个人碳足迹</button>' +
+      '<button class="btn" data-go="enterprise">打开企业碳账本</button>' +
+      '<button class="btn" data-go="points">看绿色积分怎么用</button>' +
+      '</div>' +
+      '<div class="note" style="margin-top:16px">本站是<b>项目展示 + 可操作演示</b>：排放因子、公式与来源全部公开在「数据与方法」页；' +
+      '计算不联网、不上传，所有输入只保存在你自己的浏览器里。</div>' +
+      '</div>';
+
+    var tiles = '<div class="tiles">' +
+      tile('personal', '个人碳足迹', '衣食住行逐项录入，实时给出月/年排放、结构占比与可执行减排清单。', 'M4 7h16M4 12h16M4 17h10') +
+      tile('enterprise', '企业碳账本', '按 Scope 1/2/3 填报，自动算强度、配额缺口与行业对标。', 'M3 21h18M6 21V9m6 12V4m6 17v-7') +
+      tile('points', '绿色积分', '减排量折积分，可兑螺旋藻、海洋垃圾清理、旧物循环与合作林场。', 'M12 3l2.6 6.1 6.4.6-4.8 4.3 1.4 6.2L12 17l-5.6 3.2 1.4-6.2L3 9.7l6.4-.6z') +
+      tile('dashboard', '数据看板', '把个人与企业两侧的排放、强度、趋势放在同一屏比较。', 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6') +
+      tile('project', '项目资料', '政策、市场、痛点、商业模式、财务与规划，一页读完计划书核心。', 'M6 3h9l4 4v14H6zM15 3v5h5') +
+      tile('team', '团队与成果', '9 名学生、4 位导师、7 家合作企业，以及省赛铜奖的来路。', 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z') +
+      '</div>';
+
+    var pains = '<div class="card"><h3>项目要解决的三个问题 <span class="sub">计划书 3.3 / PPT 第 5 页</span></h3>' +
+      '<div class="tiles">' + P.pains.map(function (p) {
+        return '<div class="tile" style="cursor:default">' +
+          '<h4>' + esc(p.t) + '</h4>' +
+          '<p style="margin-bottom:8px">' + esc(p.d) + '</p>' +
+          '<div class="pill block acc">' + esc(p.fix) + '</div></div>';
+      }).join('') + '</div></div>';
+
+    var tl = '<div class="card"><h3>政策与舆论时间轴 <span class="sub">计划书表 3-1</span></h3>' +
+      '<ul class="timeline">' + P.timeline.map(function (x) {
+        return '<li><b>' + esc(x.t) + '</b>' + esc(x.d) + '</li>';
+      }).join('') + '</ul></div>';
+
+    var market = '<div class="card"><h3>碳市场底色 <span class="sub">计划书 3.2</span></h3>' +
+      table([{ label: '口径' }, { label: '累计成交额', num: true }, { label: '累计成交量', num: true }],
+        P.market.rows.map(function (r) {
+          return '<tr><td>' + esc(r.name) + '</td><td class="num">' + esc(r.amount) + '</td><td class="num">' + esc(r.volume) + '</td></tr>';
+        }).join('')) +
+      '<div class="grid two" style="margin-top:14px">' +
+      '<ul class="small muted" style="margin:0;padding-left:18px;line-height:2">' +
+      P.market.facts.slice(0, 2).map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+      '<ul class="small muted" style="margin:0;padding-left:18px;line-height:2">' +
+      P.market.facts.slice(2).map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+      '</div></div>';
+
+    var snapshot = '<div class="card"><h3>当前测算快照 <span class="sub">参数来自左侧两个模块，可随时改动</span></h3>' +
+      '<div class="grid two" style="align-items:center;gap:10px">' +
+      '<div>' + C.donut([
+        { label: '食物', value: em.groups.food, color: 'var(--c1)' },
+        { label: '居住', value: em.groups.home, color: 'var(--c2)' },
+        { label: '出行', value: em.groups.travel, color: 'var(--c3)' },
+        { label: '用品', value: em.groups.goods, color: 'var(--c4)' }
+      ], { size: 176, thickness: 22, centerValue: K.fmt(em.monthly, 0), centerLabel: 'kgCO₂e / 月', aria: '个人排放构成快照' }) +
+      C.legend([
+        { label: '食物', color: 'var(--c1)' }, { label: '居住', color: 'var(--c2)' },
+        { label: '出行', color: 'var(--c3)' }, { label: '用品', color: 'var(--c4)' }
+      ]) + '</div>' +
+      '<div>' + sug.slice(0, 3).map(function (x) {
+        return '<div class="sugg" style="grid-template-columns:22px minmax(0,1fr) auto">' +
+          '<div class="n">' + x.rank + '</div>' +
+          '<div><div class="t">' + esc(x.title) + '</div><div class="m">' + esc(x.detail) + '</div></div>' +
+          '<div class="v">−' + K.fmt(x.save, 0) + ' kg<small>/年</small></div></div>';
+      }).join('') +
+      '<button class="btn mini" data-go="personal" style="margin-top:4px">查看全部 ' + sug.length + ' 条建议 →</button>' +
+      '</div></div></div>';
+
+    return pageHead('CARBON SEEKER · 项目展示站',
+      '碳寻 · 企业碳减排管理的碳应用平台',
+      '个人记录碳足迹、企业建立碳账本、平台提供碳咨询与人才培养 —— 三个角色共用一套积分与数据口径。',
+      '<button class="btn" data-go="method">数据与方法</button>' +
+      '<button class="btn primary" data-act="export-md">导出当前测算</button>') +
+      kpis + hero + snapshot + '<div class="card"><h3>四个可操作模块 + 两页资料</h3>' + tiles + '</div>' +
+      '<div class="grid two" style="align-items:start">' + pains + tl + '</div>' + market;
+  }
+
+  function tile(view, title, desc, path) {
+    return '<button class="tile" data-go="' + esc(view) + '">' +
+      '<span class="k"><svg viewBox="0 0 24 24"><path d="' + esc(path) + '"/></svg></span>' +
+      '<h4>' + esc(title) + '</h4><p>' + esc(desc) + '</p></button>';
+  }
+
+  /* ---------------- 个人碳足迹 ---------------- */
+
+  var FOOD_LABEL = {
+    beef: '牛肉', pork: '猪肉', poultry: '禽肉', fish: '水产', egg: '蛋类', dairy: '奶及奶制品',
+    rice: '米面主食', wheat: '小麦制品', veg: '蔬菜', fruit: '水果', meal: '外出就餐'
+  };
+  var HOME_LABEL = { elec: '用电', gas: '天然气', water: '自来水', heat: '集中供热' };
+  var TRAVEL_LABEL = { car: '汽油私家车', bus: '公共汽车', metro: '地铁 / 轻轨', rail: '高铁 / 普速', flight: '国内航空', bike: '骑行 / 步行' };
+  var GOODS_LABEL = { tshirt: '棉质 T 恤', pants: '长裤', coat: '外套', paper: 'A4 复印纸', bottle: 'PET 饮料瓶', bag: '塑料袋' };
+  var GOODS_UNIT = { tshirt: '件/年', pants: '件/年', coat: '件/年', paper: '张/月', bottle: '个/月', bag: '个/月' };
+
+  /* 明细表里用口语化名称，避免同一项在输入区叫“用电”、明细里叫“外购电力” */
+  var NAME_MAP = (function () {
+    var m = {};
+    [FOOD_LABEL, HOME_LABEL, TRAVEL_LABEL, GOODS_LABEL].forEach(function (src) {
+      Object.keys(src).forEach(function (k) { m[k] = src[k]; });
+    });
+    return m;
+  })();
+
+  function personal(state) {
+    var s = state.personal;
+    var em = K.personalEmission(s);
+    var bench = K.personalBenchmark(em.annual);
+    var sug = K.suggestions(s, em);
+    var potential = K.suggestionsTotal(sug);
+
+    var kpis = '<section class="kpis">' +
+      kpi('月排放', K.fmt(em.monthly, 1), 'kgCO₂e', '含绿色出行抵扣 ' + K.fmt(em.activeSaving, 1) + ' kg', 'hl') +
+      kpi('年排放', K.fmt(em.annual / 1000, 2), 'tCO₂e', '毛排放 ' + K.fmt(em.grossAnnual / 1000, 2) + ' t') +
+      kpi('对比基准', (bench.ratio * 100).toFixed(0) + '%', '基准值', (bench.delta >= 0 ? '高出 ' : '低于 ') + K.fmt(Math.abs(bench.delta) / 1000, 2) + ' t') +
+      kpi('可减碳潜力', K.fmt(potential / 1000, 2), 'tCO₂e/年', '落地后约减 ' + K.fmt(Math.min(99, potential / Math.max(1, em.annual) * 100), 0) + '%') +
+      '</section>';
+
+    var foodCard = '<div class="card accent"><h3>① 食物 <span class="sub">每月用量</span></h3>' +
+      '<div class="row-inline">' + K.FOOD_KEYS.map(function (k) {
+        return field('personal.food.' + k, FOOD_LABEL[k] || meta(k).name, s.food[k], 'kg/月',
+          { step: 0.5, title: meta(k).name + ' ' + meta(k).v + ' kgCO₂e/' + meta(k).unit });
+      }).join('') + '</div></div>';
+
+    var homeCard = '<div class="card"><h3>② 居住 <span class="sub">每月用量</span></h3>' +
+      '<div class="row-inline">' + K.HOME_KEYS.map(function (k) {
+        return field('personal.home.' + k, HOME_LABEL[k] || meta(k).name, s.home[k], meta(k).unit + '/月',
+          { step: k === 'heat' ? 0.1 : 1, title: meta(k).name + ' ' + meta(k).v + ' kgCO₂e/' + meta(k).unit });
+      }).join('') + '</div></div>';
+
+    var travelCard = '<div class="card"><h3>③ 出行 <span class="sub">每月里程</span></h3>' +
+      '<div class="row-inline">' + K.TRAVEL_KEYS.concat(['bike']).map(function (k) {
+        return field('personal.travel.' + k, TRAVEL_LABEL[k] || meta(k).name, s.travel[k], 'km/月',
+          { step: 10, title: meta(k).name + ' ' + meta(k).v + ' kgCO₂e/' + meta(k).unit });
+      }).join('') + '</div>' +
+      '<div class="note" style="margin-top:4px">骑行 / 步行按替代小汽车 0.17 kgCO₂/km 计入抵扣，不产生负排放。</div></div>';
+
+    var goodsCard = '<div class="card"><h3>④ 用品 <span class="sub">衣物按年、耗材按月</span></h3>' +
+      '<div class="row-inline">' + K.GOODS_KEYS.map(function (k) {
+        return field('personal.goods.' + k, GOODS_LABEL[k] || meta(k).name, s.goods[k], GOODS_UNIT[k] || (meta(k).unit + '/月'),
+          { step: k === 'coat' ? 0.1 : 1, title: meta(k).name + ' ' + meta(k).v + ' kgCO₂e/' + meta(k).unit });
+      }).join('') + '</div>' +
+      '<div class="page-actions" style="margin-top:6px">' +
+      '<button class="btn mini" data-act="personal-reset">恢复示例值</button>' +
+      '<button class="btn mini" data-act="personal-zero">全部清零</button>' +
+      '</div></div>';
+
+    var groups = [
+      { k: 'food', label: '食物', v: em.groups.food, color: 'var(--c1)' },
+      { k: 'home', label: '居住', v: em.groups.home, color: 'var(--c2)' },
+      { k: 'travel', label: '出行', v: em.groups.travel, color: 'var(--c3)' },
+      { k: 'goods', label: '用品', v: em.groups.goods, color: 'var(--c4)' }
+    ];
+
+    var donut = C.donut(groups.map(function (g) { return { label: g.label, value: g.v, color: g.color }; }),
+      { size: 190, thickness: 24, centerValue: K.fmt(em.monthly, 0), centerLabel: 'kgCO₂e / 月', aria: '个人排放构成' });
+
+    var breakdown = groups.map(function (g) {
+      var pct = em.grossMonthly > 0 ? g.v / em.grossMonthly : 0;
+      return '<div style="margin-bottom:11px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px">' +
+        '<span>' + esc(g.label) + '</span>' +
+        '<span class="mono">' + K.fmt(g.v, 1) + ' kg · ' + (pct * 100).toFixed(0) + '%</span></div>' +
+        bar(pct, g.color) + '</div>';
+    }).join('');
+
+    var compose = '<div class="card"><h3>排放构成 <span class="sub">每月 kgCO₂e</span></h3>' +
+      '<div class="grid two" style="align-items:center;gap:8px">' +
+      '<div>' + donut + '</div><div>' + breakdown + '</div></div>' +
+      '<div class="note" style="margin-top:6px">毛排放 ' + K.fmt(em.grossMonthly, 1) + ' kg − 绿色出行抵扣 ' +
+      K.fmt(em.activeSaving, 1) + ' kg = <b>' + K.fmt(em.monthly, 1) + ' kg/月</b>。</div></div>';
+
+    var trendCard = '<div class="card"><h3>月度趋势 <span class="sub">按季节系数还原的演示曲线</span></h3>' +
+      C.trend(K.monthlyTrend(em.monthly), { height: 190, unit: ' kg' }) +
+      '<div class="note" style="margin-top:6px">季节系数取 0.88–1.14（夏冬季用电与出行偏高），用于展示波动，' +
+      '不代表真实月度计量；真实项目需按电表与出行账单逐月核算。</div></div>';
+
+    var topRows = em.topItems.length ? em.topItems.map(function (it) {
+      return '<tr><td>' + esc(NAME_MAP[it.k] || it.name) + '</td><td class="num">' + K.fmt(it.qty, 1) + '</td><td>' + esc(it.unit) + '</td>' +
+        '<td class="num">' + K.fmt(it.kg, 1) + '</td><td class="num">' + ((it.kg / Math.max(1, em.grossMonthly)) * 100).toFixed(1) + '%</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="muted">还没有排放项，先在上面填几个数。</td></tr>';
+
+    var top = '<div class="card"><h3>排放明细 Top 5 <span class="sub">按贡献排序</span></h3>' +
+      table([{ label: '项目' }, { label: '用量', num: true }, { label: '单位' }, { label: 'kgCO₂e/月', num: true }, { label: '占比', num: true }], topRows) +
+      '</div>';
+
+    var suggList = sug.slice(0, 6).map(function (x) {
+      return '<div class="sugg"><div class="n">' + x.rank + '</div>' +
+        '<div><div class="t">' + esc(x.title) + ' <span class="pill">' + esc(x.level) + '</span></div>' +
+        '<div class="m">' + esc(x.detail) + '</div></div>' +
+        '<div class="v">−' + K.fmt(x.save, 0) + ' kg<small>/年 · ' + K.fmt(x.points, 0) + ' 分</small></div></div>';
+    }).join('');
+
+    var suggCard = '<div class="card"><h3>减排建议 <span class="sub">按当前输入实算，不写死结论</span></h3>' +
+      (suggList || '<div class="muted small">填入用量后这里会出现按可减量排序的建议。</div>') +
+      '<div class="note" style="margin-top:6px">全部建议落地合计约 <b>' + K.fmt(potential, 0) + ' kgCO₂e/年</b>，' +
+      '相当于基准值的 ' + ((potential / Math.max(1, bench.benchmark)) * 100).toFixed(0) + '%。</div></div>';
+
+    var pointsCard = '<div class="card"><h3>绿色积分 <span class="sub">1 kg 减排 = 10 分</span></h3>' +
+      '<div class="grid two" style="gap:12px">' +
+      '<div><div class="kpi hl" style="margin:0"><div class="k">按建议全部落地可获积分</div>' +
+      '<div class="v">' + K.fmt(K.pointsFromCarbonKg(potential), 0) + '<small>分</small></div>' +
+      '<div class="d">' + K.fmt(potential, 0) + ' kgCO₂e/年 减排量</div></div></div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' +
+      '<button class="btn primary" data-go="points">去兑换</button>' +
+      '<button class="btn" data-act="export-json">导出 JSON</button>' +
+      '<button class="btn" data-act="export-md">导出 Markdown 报告</button>' +
+      '</div></div></div>';
+
+    return pageHead('个人模块 · 碳足迹记录',
+      '衣食住行逐项算，一个月多少碳',
+      '四类输入全部按自然单位录入（kg、kWh、m³、km、件），右侧结果随输入实时更新；每个因子都能在「数据与方法」里查到出处。',
+      '<button class="btn" data-act="export-json">导出 JSON</button>' +
+      '<button class="btn primary" data-act="export-md">导出报告</button>') +
+      kpis +
+      '<div class="grid side">' +
+      '<div>' + foodCard + homeCard + travelCard + goodsCard + '</div>' +
+      '<div>' + compose + trendCard + top + suggCard + pointsCard + '</div>' +
+      '</div>';
+  }
+
+  /* ---------------- 企业碳账本 ---------------- */
+
+  function factorOptions(selected) {
+    var groups = {};
+    F.FACTORS.forEach(function (f) { (groups[f.g] = groups[f.g] || []).push(f); });
+    return Object.keys(groups).map(function (g) {
+      return '<optgroup label="' + esc(g) + '">' + groups[g].map(function (f) {
+        return '<option value="' + esc(f.k) + '"' + (f.k === selected ? ' selected' : '') + '>' +
+          esc(f.name) + '</option>';
+      }).join('') + '</optgroup>';
+    }).join('');
+  }
+
+  function enterprise(state) {
+    var m = state.enterprise;
+    var sum = K.enterpriseSummary(m);
+
+    var kpis = '<section class="kpis">' +
+      kpi('排放总量', K.fmt(sum.total, 1), 'tCO₂e', m.rows.length + ' 条排放源', 'hl') +
+      kpi('排放强度', K.fmt(sum.intensity, 3), 't/万元', '产值 ' + K.fmt(sum.output, 0) + ' 万元') +
+      kpi('行业对标', sum.benchmark > 0 ? (sum.ratio * 100).toFixed(0) + '%' : '—', sum.sector ? sum.sector.name : '未选行业',
+        sum.benchmark > 0 ? (sum.ratio <= 1 ? '优于基准 ' : '高于基准 ') + K.fmt(Math.abs(sum.intensity - sum.benchmark), 3) : '') +
+      kpi(sum.gap > 0 ? '配额缺口' : '配额盈余', K.fmt(Math.abs(sum.gap), 1), 'tCO₂e', '免费配额 ' + K.fmt(sum.freeQuota, 1) + ' t') +
+      '</section>';
+
+    var info = '<div class="card accent"><h3>企业基本信息</h3>' +
+      '<div class="field"><label for="entName"><span>企业名称</span><b>展示用</b></label>' +
+      '<input id="entName" type="text" value="' + esc(m.name) + '" data-bind="enterprise.name"></div>' +
+      '<div class="row-inline">' +
+      field('enterprise.output', '年产值', m.output, '万元', { step: 100 }) +
+      field('enterprise.employees', '员工人数', m.employees, '人', { step: 10 }) +
+      '</div>' +
+      '<div class="field"><label for="entSector"><span>所属行业</span><b>强度基准</b></label>' +
+      '<select id="entSector" data-bind="enterprise.sector">' + F.SECTORS.map(function (s) {
+        return '<option value="' + esc(s.k) + '"' + (s.k === m.sector ? ' selected' : '') + '>' +
+          esc(s.name + '（' + s.v + ' t/万元）') + '</option>';
+      }).join('') + '</select></div>' +
+      '<button class="btn mini" data-act="enterprise-reset">恢复示例企业</button>' +
+      '</div>';
+
+    var scopeName = { 1: 'Scope 1', 2: 'Scope 2', 3: 'Scope 3' };
+    var rows = m.rows.map(function (r) {
+      var f = F.map[r.fk] || { v: 0, unit: '-', name: '-' };
+      var t = (parseFloat(r.qty) || 0) * f.v / 1000;
+      return '<tr>' +
+        '<td><select data-row="' + esc(r.id) + '" data-field="scope" aria-label="排放范围">' +
+        [1, 2, 3].map(function (n) {
+          return '<option value="' + n + '"' + (Number(r.scope) === n ? ' selected' : '') + '>' + scopeName[n] + '</option>';
+        }).join('') + '</select></td>' +
+        '<td><select data-row="' + esc(r.id) + '" data-field="fk" aria-label="排放源">' + factorOptions(r.fk) + '</select></td>' +
+        '<td class="num"><input type="number" min="0" step="1" value="' + esc(r.qty) + '" data-row="' + esc(r.id) + '" data-field="qty" style="width:118px" aria-label="用量"></td>' +
+        '<td>' + esc(f.unit) + '</td>' +
+        '<td class="num">' + K.fmt(f.v, f.v >= 100 ? 0 : 3) + '</td>' +
+        '<td class="num"><b>' + K.fmt(t, 2) + '</b></td>' +
+        '<td><input type="text" value="' + esc(r.note || '') + '" data-row="' + esc(r.id) + '" data-field="note" style="min-width:150px" aria-label="备注"></td>' +
+        '<td><button class="btn mini danger" data-del="' + esc(r.id) + '" aria-label="删除该行">×</button></td>' +
+        '</tr>';
+    }).join('');
+
+    var foot = '<tr><td colspan="5">合计</td><td class="num">' + K.fmt(sum.total, 2) + ' t</td><td colspan="2" class="muted">' +
+      'S1 ' + K.fmt(sum.byScope[1] || 0, 1) + ' · S2 ' + K.fmt(sum.byScope[2] || 0, 1) + ' · S3 ' + K.fmt(sum.byScope[3] || 0, 1) + '</td></tr>';
+
+    var ledger = '<div class="card"><h3>碳账本 <span class="sub">按 Scope 1 / 2 / 3 填报，单位自适应</span>' +
+      '<button class="btn mini" data-act="row-add" style="margin-left:auto">+ 新增排放源</button></h3>' +
+      table([
+        { label: '范围' }, { label: '排放源' }, { label: '用量', num: true }, { label: '单位' },
+        { label: '因子', num: true }, { label: 'tCO₂e', num: true }, { label: '备注' }, { label: '' }
+      ], rows, { foot: foot }) +
+      '<div class="note" style="margin-top:10px">Scope 1 = 自有燃烧与逸散；Scope 2 = 外购电与热；Scope 3 = 通勤、货运、差旅、办公等价值链排放。' +
+      '因子列显示当前换算系数（kgCO₂e / 单位），改排放源会自动换单位。</div></div>';
+
+    var scopeItems = [
+      { label: 'Scope 1 直接排放', value: sum.byScope[1] || 0, color: 'var(--c3)' },
+      { label: 'Scope 2 外购能源', value: sum.byScope[2] || 0, color: 'var(--c1)' },
+      { label: 'Scope 3 价值链', value: sum.byScope[3] || 0, color: 'var(--c2)' }
+    ];
+
+    var scopeCard = '<div class="card"><h3>排放范围构成</h3>' +
+      C.donut(scopeItems, { size: 190, thickness: 24, centerValue: K.fmt(sum.total, 0), centerLabel: 'tCO₂e / 年', aria: '企业排放范围构成' }) +
+      '<div style="margin-top:10px">' + scopeItems.map(function (it) {
+        var pct = sum.total > 0 ? it.value / sum.total : 0;
+        return '<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:11.5px;margin-bottom:4px">' +
+          '<span>' + esc(it.label) + '</span><span class="mono">' + K.fmt(it.value, 1) + ' t · ' + (pct * 100).toFixed(0) + '%</span></div>' +
+          bar(pct, it.color) + '</div>';
+      }).join('') + '</div>' +
+      '<div class="note">人均排放 ' + K.fmt(sum.perCapita / 1000, 2) + ' tCO₂e/人·年（' + K.fmt(m.employees, 0) + ' 人）。</div></div>';
+
+    var benchItems = [{ label: '本企业', value: sum.intensity, color: 'var(--c1)', marker: sum.intensity }].concat(
+      F.SECTORS.map(function (s) { return { label: s.name, value: s.v, color: 'var(--c4)', marker: sum.intensity }; })
+    );
+
+    var benchCard = '<div class="card"><h3>行业强度对标 <span class="sub">虚线 = 本企业强度</span></h3>' +
+      C.hbars(benchItems, { unit: ' t/万元', labelWidth: 128, rowH: 30, aria: '行业碳强度对标' }) +
+      '<div class="note" style="margin-top:8px">行业强度为示意值，用于同一口径下的相对比较；正式披露应采用生态环境部发布的行业核算指南与基准值。</div></div>';
+
+    var paretoCard = '<div class="card"><h3>排放源帕累托 <span class="sub">找出前 3 个该先动的口子</span></h3>' +
+      (sum.pareto.length ? C.hbars(sum.pareto.map(function (p, i) {
+        return { label: p.name, value: p.t, color: i === 0 ? 'var(--c1)' : (i < 3 ? 'var(--c2)' : 'var(--c4)') };
+      }), { unit: ' t', labelWidth: 156, rowH: 28 }) : '<div class="muted small">还没有排放源。</div>') +
+      (sum.pareto.length ? table([{ label: '排名' }, { label: '排放源' }, { label: 'tCO₂e', num: true }, { label: '占比', num: true }, { label: '累计', num: true }],
+        sum.pareto.slice(0, 6).map(function (p, i) {
+          return '<tr><td>' + (i + 1) + '</td><td>' + esc(p.name) + (p.note ? ' <span class="muted small">' + esc(p.note) + '</span>' : '') + '</td>' +
+            '<td class="num">' + K.fmt(p.t, 2) + '</td><td class="num">' + (p.share * 100).toFixed(1) + '%</td>' +
+            '<td class="num">' + (p.cum * 100).toFixed(1) + '%</td></tr>';
+        }).join(''), { plain: true }) : '') +
+      '</div>';
+
+    return pageHead('企业模块 · 碳账本',
+      '一家企业的碳账本长什么样',
+      '按排放源逐行填报，自动汇总 Scope 占比、产值强度、行业对标与配额缺口；示例企业为机械制造，可按自己的行业替换。',
+      '<button class="btn" data-act="export-csv">导出 CSV</button>' +
+      '<button class="btn primary" data-act="export-md">导出报告</button>') +
+      kpis +
+      '<div class="grid" style="grid-template-columns:340px minmax(0,1fr);align-items:start">' +
+      '<div>' + info + scopeCard + '</div>' +
+      '<div>' + ledger + '</div>' +
+      '</div>' +
+      '<div class="grid two" style="align-items:start">' + benchCard + paretoCard + '</div>';
+  }
+
+  /* ---------------- 绿色积分 ---------------- */
+
+  function points(state) {
+    var em = K.personalEmission(state.personal);
+    var sug = K.suggestions(state.personal, em);
+    var potential = K.suggestionsTotal(sug);
+    var auto = K.pointsFromCarbonKg(potential);
+    var balance = state.points == null ? auto : Math.max(0, Math.round(Number(state.points) || 0));
+    var plan = K.redeemPlan(balance, F.POINTS.items);
+
+    var kpis = '<section class="kpis">' +
+      kpi('可用积分', K.fmt(balance, 0), '分', state.points == null ? '来自个人页的减排潜力' : '手动设定', 'hl') +
+      kpi('折算减排量', K.fmt(balance / F.POINTS.perKg, 1), 'kgCO₂e', '1 kg = 10 分') +
+      kpi('兑换固碳量', K.fmt(plan.credit, 2), 'kgCO₂e', '螺旋藻 / 旧物 / 林木合计') +
+      kpi('生态贡献', K.fmt(plan.oceanKg, 0), 'kg 海洋垃圾', '计生态量，不折碳') +
+      '</section>';
+
+    var ruleCard = '<div class="card accent"><h3>积分怎么来、怎么用</h3>' +
+      '<ol class="small muted" style="margin:0 0 12px;padding-left:18px;line-height:2.1">' +
+      '<li>签到、微信步数同步、观看广告获得基础积分。</li>' +
+      '<li>减碳行为按 <b>1 kg 减排 = 10 分</b> 折算，由平台核算后排碳量。</li>' +
+      '<li>积分可兑换螺旋藻制品、海洋垃圾清理、旧物循环与合作林场。</li>' +
+      '<li>企业侧积分可计入员工绩效考核，助力碳中和企业认证。</li>' +
+      '</ol>' +
+      '<div class="field"><label for="pts"><span>手动设定积分（留空 = 用个人页测算值 ' + K.fmt(auto, 0) + '）</span><b>分</b></label>' +
+      '<input id="pts" type="number" min="0" step="100" value="' + (state.points == null ? '' : esc(state.points)) + '" data-bind="points" placeholder="' + K.fmt(auto, 0) + '"></div>' +
+      '<div class="page-actions">' +
+      '<button class="btn mini" data-act="points-auto">用测算值</button>' +
+      '<button class="btn mini" data-go="personal">去减少排放</button>' +
+      '</div></div>';
+
+    var itemsCard = '<div class="card"><h3>可兑换物 <span class="sub">按当前积分计算可换数量</span></h3>' +
+      plan.list.map(function (it) {
+        var pct = it.cost > 0 ? Math.min(1, balance / it.cost) : 0;
+        return '<div class="sugg" style="grid-template-columns:minmax(0,1fr) auto;align-items:center">' +
+          '<div><div class="t">' + esc(it.name) + ' <span class="pill ' + (it.count > 0 ? 'ok' : '') + '">' +
+          (it.count > 0 ? '可换 ' + it.count + ' 份' : '差 ' + K.fmt(it.cost - balance, 0) + ' 分') + '</span></div>' +
+          '<div class="m">' + esc(it.note) + ' · ' + K.fmt(it.cost, 0) + ' 分/份</div>' +
+          '<div style="margin-top:6px;max-width:320px">' + bar(pct) + '</div></div>' +
+          '<div class="v">' + (it.kind === 'carbon' ? '−' + K.fmt(it.credit, 2) + ' kg CO₂e' : '生态贡献') +
+          '<small>已换 ' + it.count + ' 份</small></div></div>';
+      }).join('') + '</div>';
+
+    var simRows = plan.list.map(function (it) {
+      return '<tr><td>' + esc(it.name) + '</td><td class="num">' + K.fmt(it.cost, 0) + '</td>' +
+        '<td class="num">' + it.count + '</td><td class="num">' + K.fmt(it.spent, 0) + '</td>' +
+        '<td class="num">' + (it.kind === 'carbon' ? K.fmt(it.credit, 2) + ' kg' : '—') + '</td></tr>';
+    }).join('');
+
+    var simCard = '<div class="card"><h3>兑换模拟 <span class="sub">按“先贵后便宜”的贪心顺序</span></h3>' +
+      table([{ label: '兑换物' }, { label: '单价', num: true }, { label: '份数', num: true }, { label: '消耗', num: true }, { label: '固碳', num: true }],
+        simRows,
+        { foot: '<tr><td>合计</td><td></td><td></td><td class="num">' + K.fmt(plan.spent, 0) + ' 分</td><td class="num">' + K.fmt(plan.credit, 2) + ' kg</td></tr>' }) +
+      '<div class="note" style="margin-top:10px">剩余 <b>' + K.fmt(plan.left, 0) + ' 分</b>。兑换顺序可在正式产品中改为用户自选；' +
+      '海洋垃圾清理属于生态服务，不折算碳减排，避免把两种量纲混在一起。</div></div>';
+
+    return pageHead('个人模块 · 绿色积分',
+      '减排量怎么变成能换东西的积分',
+      '积分不是营销道具，而是减碳量的记账凭证：每一分都能追到一条减排记录、一个因子和一次兑换。',
+      '<button class="btn" data-go="personal">回到碳足迹</button>' +
+      '<button class="btn primary" data-act="export-md">导出报告</button>') +
+      kpis +
+      '<div class="grid two" style="align-items:start">' + ruleCard + itemsCard + '</div>' + simCard;
+  }
+
+  /* ---------------- 数据看板 ---------------- */
+
+  function dashboard(state) {
+    var em = K.personalEmission(state.personal);
+    var ent = K.enterpriseSummary(state.enterprise);
+    var sug = K.suggestions(state.personal, em);
+    var potential = K.suggestionsTotal(sug);
+    var bench = K.personalBenchmark(em.annual);
+
+    var kpis = '<section class="kpis">' +
+      kpi('个人年排放', K.fmt(em.annual / 1000, 2), 'tCO₂e', '基准 ' + K.fmt(bench.benchmark / 1000, 1) + ' t', 'hl') +
+      kpi('企业年排放', K.fmt(ent.total, 0), 'tCO₂e', '强度 ' + K.fmt(ent.intensity, 3) + ' t/万元') +
+      kpi('两侧合计', K.fmt(ent.total + em.annual / 1000, 1), 'tCO₂e', '企业与个人同口径相加') +
+      kpi('减碳潜力', K.fmt(potential / 1000, 2), 'tCO₂e/年', '仅个人侧建议') +
+      '</section>';
+
+    var personalGroups = [
+      { label: '食物', value: em.groups.food, color: 'var(--c1)' },
+      { label: '居住', value: em.groups.home, color: 'var(--c2)' },
+      { label: '出行', value: em.groups.travel, color: 'var(--c3)' },
+      { label: '用品', value: em.groups.goods, color: 'var(--c4)' }
+    ];
+    var scopeData = [
+      { label: 'Scope 1', value: ent.byScope[1] || 0, color: 'var(--c3)' },
+      { label: 'Scope 2', value: ent.byScope[2] || 0, color: 'var(--c1)' },
+      { label: 'Scope 3', value: ent.byScope[3] || 0, color: 'var(--c2)' }
+    ];
+
+    var cards = '<div class="grid two">' +
+      '<div class="card"><h3>个人侧 · 排放结构</h3>' +
+      C.donut(personalGroups, { size: 176, thickness: 22, centerValue: K.fmt(em.monthly, 0), centerLabel: 'kg / 月' }) +
+      C.legend(personalGroups) + '</div>' +
+      '<div class="card"><h3>企业侧 · 范围结构</h3>' +
+      C.donut(scopeData, { size: 176, thickness: 22, centerValue: K.fmt(ent.total, 0), centerLabel: 't / 年' }) +
+      C.legend(scopeData) + '</div>' +
+      '</div>';
+
+    var trendCard = '<div class="card"><h3>个人月度排放趋势 <span class="sub">kgCO₂e</span></h3>' +
+      C.trend(K.monthlyTrend(em.monthly), { height: 200 }) + '</div>';
+
+    var compRows = [
+      { k: '统计边界', p: '个人生活消费', e: '企业前后台运营 + 价值链' },
+      { k: '主要排放源', p: em.topItems.length ? em.topItems[0].name : '—', e: ent.pareto.length ? ent.pareto[0].name : '—' },
+      { k: '总量', p: K.fmt(em.annual / 1000, 2) + ' t/年', e: K.fmt(ent.total, 1) + ' t/年' },
+      { k: '强度指标', p: (bench.ratio * 100).toFixed(0) + '% 基准', e: K.fmt(ent.intensity, 3) + ' t/万元' },
+      { k: '可操作口子', p: sug.length + ' 条建议', e: ent.pareto.length + ' 个排放源' }
+    ];
+    var compTable = '<div class="card"><h3>两侧口径对照</h3>' +
+      table([{ label: '维度' }, { label: '个人侧' }, { label: '企业侧' }], compRows.map(function (r) {
+        return '<tr><td>' + esc(r.k) + '</td><td>' + esc(r.p) + '</td><td>' + esc(r.e) + '</td></tr>';
+      }).join('')) +
+      '<div class="note warn" style="margin-top:10px">看板上的数据全部来自左侧两个模块当前参数，属于<b>演示测算</b>；' +
+      '个人侧年度值 = 月值 × 12，未做季节积分。</div></div>';
+
+    return pageHead('数据看板',
+      '两侧放在一起看，才知道该先动哪里',
+      '个人高在饮食与出行，企业高在外购电与通勤 —— 同一套因子、同一套口径，才能比较、才能排序。',
+      '<button class="btn" data-go="personal">调整个人参数</button>' +
+      '<button class="btn" data-go="enterprise">调整企业参数</button>') +
+      kpis + cards + trendCard + compTable;
+  }
+
+  /* ---------------- 项目资料 ---------------- */
+
+  function accordion(title, body, open, tag) {
+    return '<details class="acc"' + (open ? ' open' : '') + '><summary>' + esc(title) +
+      (tag ? '<span class="tag">' + esc(tag) + '</span>' : '') + '</summary><div class="acc-body">' + body + '</div></details>';
+  }
+
+  function project() {
+    var pest = '<div class="grid two">' + P.pest.map(function (x) {
+      return '<div class="card" style="margin:0"><h3><span class="pill acc">' + esc(x.k) + '</span>' + esc(x.name) + '因素</h3>' +
+        '<ul class="small muted" style="margin:0;padding-left:18px;line-height:2">' +
+        x.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+
+    var marketBody = table([{ label: '口径' }, { label: '累计成交额', num: true }, { label: '累计成交量', num: true }],
+      P.market.rows.map(function (r) {
+        return '<tr><td>' + esc(r.name) + '</td><td class="num">' + esc(r.amount) + '</td><td class="num">' + esc(r.volume) + '</td></tr>';
+      }).join('')) + '<ul class="small muted" style="padding-left:18px;line-height:2;margin-top:12px">' +
+      P.market.facts.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>';
+
+    var swot = '<div class="swot">' + ['s', 'w', 'o', 't'].map(function (k) {
+      var g = P.swot[k];
+      return '<section data-k="' + k + '"><h5><i></i>' + esc(g.name) + '</h5><ul>' +
+        g.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></section>';
+    }).join('') + '</div>';
+
+    var products = '<div class="grid three">' + P.products.map(function (p) {
+      return '<div class="card" style="margin:0"><h3>' + esc(p.name) + '</h3><ul class="small muted" style="margin:0;padding-left:16px;line-height:2">' +
+        p.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+
+    var revenue = table([{ label: '模式' }, { label: '特点' }, { label: '举例' }],
+      P.revenue.rows.map(function (r) {
+        return '<tr><td>' + esc(r.mode) + '</td><td>' + esc(r.feature) + '</td><td>' + esc(r.eg) + '</td></tr>';
+      }).join('')) + '<p class="small muted" style="margin:10px 0 0">' + esc(P.revenue.detail) + '</p>';
+
+    var stp = '<div class="grid three">' +
+      stpTable('学历', P.stp.education) + stpTable('年龄', P.stp.age) + stpTable('城市', P.stp.city) +
+      '</div><div class="note" style="margin-top:12px">样本 ' + P.stp.sample + ' 份。' + esc(P.stp.conclusion) + '</div>';
+
+    var financeBody =
+      '<div class="grid two" style="align-items:start">' +
+      '<div><h4>资金使用明细（万元）</h4>' +
+      table([{ label: '科目' }, { label: '金额', num: true }], P.finance.use.map(function (u) {
+        return '<tr><td>' + esc(u.item) + '</td><td class="num">' + K.fmt(u.amount, 1) + '</td></tr>';
+      }).join(''), { foot: '<tr><td>合计</td><td class="num">' + K.fmt(P.finance.useTotal, 1) + '</td></tr>' }) +
+      '</div><div><h4>经营预测</h4>' +
+      table([{ label: '年度' }, { label: '个人用户' }, { label: '个人收入', num: true }, { label: '企业数' }, { label: '企业收入', num: true }, { label: '合计', num: true }],
+        P.finance.forecast.map(function (f) {
+          return '<tr><td>' + esc(f.year) + '</td><td>' + esc(f.users) + '</td><td class="num">' + K.fmt(f.userRevenue, 2) + '</td>' +
+            '<td>' + esc(f.firms) + '</td><td class="num">' + K.fmt(f.firmRevenue, 2) + '</td><td class="num"><b>' + K.fmt(f.total, 2) + '</b></td></tr>';
+        }).join('')) +
+      '<p class="small muted" style="margin:8px 0 0">单位：万元。三大报表（资产负债、利润、现金流）见计划书 8.2.3；' +
+      '原表存在个别录入不一致，本站只引用可复核的汇总项。</p></div></div>' +
+      '<div class="grid two" style="margin-top:14px;align-items:start">' +
+      '<div><h4>股权结构</h4><div class="note">' + esc(P.finance.capital.note) + '</div>' +
+      '<div style="margin-top:10px">' + bar(P.finance.capital.studentShare / 100, 'var(--c1)') + '</div>' +
+      '<div class="small muted" style="margin-top:6px">学生团队 ' + P.finance.capital.student + ' 万元 · ' + P.finance.capital.studentShare + '%　|　' +
+      '外部融资 ' + P.finance.capital.external + ' 万元 · ' + P.finance.capital.externalShare + '%</div></div>' +
+      '<div><h4>融资计划</h4>' + table([{ label: '阶段' }, { label: '金额' }, { label: '说明' }],
+        P.finance.funding.map(function (f) {
+          return '<tr><td>' + esc(f.stage) + '</td><td>' + esc(f.amount) + '</td><td class="small">' + esc(f.note) + '</td></tr>';
+        }).join('')) + '</div></div>' +
+      '<h4>财务假设</h4><ul class="small muted" style="padding-left:18px;line-height:2">' +
+      P.finance.assumptions.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>';
+
+    var risks = P.risks.map(function (r) {
+      return '<div class="card" style="margin-bottom:10px"><h3>' + esc(r.t) + '</h3>' +
+        '<p class="small muted" style="margin:0 0 8px">' + esc(r.d) + '</p>' +
+        '<div class="note"><b>对策：</b>' + esc(r.s) + '</div></div>';
+    }).join('');
+
+    var plan = '<div class="grid three">' + P.plan.map(function (g) {
+      return '<div class="card" style="margin:0"><h3>' + esc(g.k) + '</h3><ul class="small muted" style="margin:0;padding-left:16px;line-height:2">' +
+        g.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul></div>';
+    }).join('') + '</div>';
+
+    return pageHead('项目资料 · 计划书核心',
+      '从政策到财务：这个项目凭什么成立',
+      '内容取自《碳寻计划书12.docx》与省赛 PPT，按“背景—市场—痛点—模式—营销—规划—财务—风险”重排，便于评委和合作方快速定位。',
+      '<button class="btn" data-go="team">团队与成果</button>') +
+      accordion('一、项目背景与政策环境', pest, true, 'PEST') +
+      accordion('二、市场规模与碳市场底色', marketBody, false, '3.2') +
+      accordion('三、市场痛点与我们的切口', '<div class="grid three">' + P.pains.map(function (p) {
+        return '<div class="card" style="margin:0"><h3>' + esc(p.t) + '</h3><p class="small muted">' + esc(p.d) + '</p>' +
+          '<div class="pill acc">' + esc(p.fix) + '</div></div>';
+      }).join('') + '</div>', false, '3.3') +
+      accordion('四、SWOT 分析', swot, false, '第四章') +
+      accordion('五、产品构成：个人 / 企业 / 会员', products, false, '5.2') +
+      accordion('六、盈利模式', revenue, false, '5.3') +
+      accordion('七、市场调研与 STP', stp, false, '第六章') +
+      accordion('八、发展规划与四条业务线', plan, false, '第七章') +
+      accordion('九、财务与融资', financeBody, false, '第八章') +
+      accordion('十、风险与对策', risks, false, '第十章');
+  }
+
+  function stpTable(title, rows) {
+    return '<div class="card" style="margin:0"><h3>' + esc(title) + '分布</h3>' +
+      table([{ label: '分组' }, { label: '人数', num: true }, { label: '占比', num: true }],
+        rows.map(function (r) {
+          return '<tr><td>' + esc(r.label) + '</td><td class="num">' + r.n + '</td><td class="num">' + r.p.toFixed(2) + '%</td></tr>';
+        }).join('')) + '</div>';
+  }
+
+  /* ---------------- 团队与成果 ---------------- */
+
+  function team() {
+    var results = '<section class="kpis">' + P.results.map(function (r) {
+      return kpi(r.short || r.v, r.k, '', r.v, r.k === '铜奖' ? 'hl' : '');
+    }).join('') + '</section>';
+
+    var people = '<div class="people">' + P.team.map(function (m) {
+      return '<div class="person"><div class="nm">' + esc(m.name) + '</div>' +
+        '<div class="role">' + esc(m.role) + '</div><p>' + esc(m.info) + '</p></div>';
+    }).join('') + '</div>';
+
+    var mentors = '<div class="grid two">' + P.mentors.map(function (m) {
+      return '<div class="person"><div class="nm">' + esc(m.name) + '</div>' +
+        '<div class="role">' + esc(m.role) + '</div><p>' + esc(m.info) + '</p></div>';
+    }).join('') + '</div>';
+
+    var partners = table([{ label: '企业' }, { label: '主营 / 备注' }],
+      P.partners.map(function (p) {
+        return '<tr><td>' + esc(p.name) + '</td><td class="small muted">' + esc(p.note) + '</td></tr>';
+      }).join(''));
+
+    var honors = '<ul class="small muted" style="margin:0;padding-left:18px;line-height:2.1">' +
+      P.honors.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul>';
+
+    return pageHead('团队与成果',
+      '9 名学生、4 位导师、7 家企业的合作意向',
+      '从校级一等奖到省赛铜奖，这支跨学院团队把一份课程作业推进到了有合作意向书、有论文支撑的项目。',
+      '<button class="btn" data-go="project">回到项目资料</button>') +
+      results +
+      '<div class="card accent"><h3>学生团队 <span class="sub">市场营销 / 财税 / 商务英语 / 旅游 / 工商管理 / 管理科学与工程</span></h3>' + people + '</div>' +
+      '<div class="card"><h3>导师团队</h3>' + mentors + '</div>' +
+      '<div class="grid two" style="align-items:start">' +
+      '<div class="card"><h3>合作意向企业 <span class="sub">' + P.partners.length + ' 家</span></h3>' + partners + '</div>' +
+      '<div class="card"><h3>获奖与立项</h3>' + honors +
+      '<div class="note" style="margin-top:12px">' + esc(P.meta.award) + '（' + esc(P.meta.awardDetail) + '）</div></div>' +
+      '</div>';
+  }
+
+  /* ---------------- 数据与方法 ---------------- */
+
+  function method(state) {
+    var groups = {};
+    F.FACTORS.forEach(function (f) { (groups[f.g] = groups[f.g] || []).push(f); });
+
+    var tables = Object.keys(groups).map(function (g) {
+      return '<h4>' + esc(g) + '</h4>' +
+        table([{ label: '指标' }, { label: '单位' }, { label: '因子 kgCO₂e/单位', num: true }, { label: '来源与口径' }],
+          groups[g].map(function (f) {
+            return '<tr><td>' + esc(f.name) + '</td><td class="mono">' + esc(f.unit) + '</td>' +
+              '<td class="num">' + esc(String(f.v)) + '</td>' +
+              '<td class="small muted">' + esc(f.src) + '</td></tr>';
+          }).join(''));
+    }).join('');
+
+    var formulas = '<ul class="small muted" style="padding-left:18px;line-height:2.1">' +
+      '<li><b>单项排放</b> = 用量 × 排放因子 ÷ 1000（tCO₂e）</li>' +
+      '<li><b>个人月排放</b> = Σ食物 + Σ居住 + Σ出行 + Σ用品/12 − 骑行抵扣</li>' +
+      '<li><b>年排放</b> = 月排放 × 12（未做季节积分，季节系数只用于趋势展示）</li>' +
+      '<li><b>企业强度</b> = 排放总量 ÷ 年产值（万元）</li>' +
+      '<li><b>配额缺口</b> = 排放总量 − 产值 × 行业强度基准</li>' +
+      '<li><b>绿色积分</b> = 减排量（kg）× 10</li>' +
+      '<li><b>螺旋藻固碳</b> = 干重（kg）× 1.8 kgCO₂</li>' +
+      '</ul>';
+
+    var caveats = '<div class="note warn"><b>边界与限制：</b>' +
+      '<ul style="margin:8px 0 0;padding-left:18px;line-height:2">' +
+      '<li>个人侧因子为生活消费口径，未含公共基础设施与政府服务分摊，因此与“全国人均 8 t”这类含工业口径的数字不可直接比较。</li>' +
+      '<li>企业侧示例数据为演示构造；行业强度基准为示意值，正式披露须使用生态环境部行业核算指南。</li>' +
+      '<li>食物因子取全球均值的取整值，区域供应链差异会带来 ±30% 波动。</li>' +
+      '<li>螺旋藻固碳、旧物循环、林木固碳均为估算，不构成可交易的核证减排量（CCER）。</li>' +
+      '<li>趋势图为按季节系数还原的演示曲线，不是真实月度计量。</li>' +
+      '</ul></div>';
+
+    var build = '<div class="note"><b>构建信息：</b><span class="mono" id="buildInfo">' +
+      esc((global.__BUILD__ && global.__BUILD__.digest) ? ('digest ' + global.__BUILD__.digest + ' · ' + global.__BUILD__.time) : 'dev 模式（未注入构建摘要）') +
+      '</span>。单文件构建，无框架、无外部字体、无网络请求；输入只写入浏览器 localStorage。</div>';
+
+    return pageHead('数据与方法',
+      '每个数字都能追到一个因子',
+      '这一页是整站的可信度基础：因子、公式、基准、边界全部公开。评审或合作方要复核任何一个结论，都可以从这里出发。',
+      '<button class="btn" data-act="print">打印为 PDF</button>') +
+      '<div class="grid two" style="align-items:start">' +
+      '<div class="card accent"><h3>计算公式</h3>' + formulas +
+      '<h4>人均参照</h4><div class="note">' + esc(F.BENCHMARK.personalLabel) + '；含工业与电力的全国人均约 ' +
+      K.fmt(F.BENCHMARK.nationalPerCapita / 1000, 1) + ' tCO₂e（背景参考，不用于本页对标）。</div></div>' +
+      '<div class="card"><h3>使用与合规说明</h3>' + caveats +
+      '<div class="note" style="margin-top:10px">本站为创新创业项目展示与教学演示，不提供碳核查、碳交易或认证服务；' +
+      '对外披露请以第三方核查机构出具的报告为准。</div></div>' +
+      '</div>' +
+      '<div class="card"><h3>排放因子表 <span class="sub">' + F.FACTORS.length + ' 项</span></h3>' + tables + '</div>' +
+      '<div class="card"><h3>版本与部署</h3>' + build +
+      '<p class="small muted" style="margin:10px 0 0">源码结构与 DAC Workbench 一致：<span class="mono">src/</span> 分模块开发，' +
+      '<span class="mono">build.py</span> 合成单文件 <span class="mono">dist/index.html</span>，' +
+      '<span class="mono">docs/</span> 作为 GitHub Pages 发布目录，<span class="mono">tests/</span> 用 node --test 校验计算内核。</p></div>';
+  }
+
+  global.CS = global.CS || {};
+  global.CS.views = {
+    overview: overview, personal: personal, enterprise: enterprise, points: points,
+    dashboard: dashboard, project: project, team: team, method: method
+  };
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- ui/app.js -->
+<script>
+/* 应用层：路由、绑定、导出、主题。
+   渲染策略：状态变化 → 重建当前视图 HTML → 把焦点还给刚才那个输入框。
+   这样既不需要框架，也不会在打字时丢焦点。 */
+(function (global) {
+  'use strict';
+
+  var K = global.CS.calc;
+  var F = global.CS.factors;
+  var P = global.CS.project;
+  var V = global.CS.views;
+  var S = global.CS.store;
+
+  var ICONS = {
+    overview: 'M4 13h6V4H4zM14 20h6v-9h-6zM4 20h6v-4H4zM14 8h6V4h-6z',
+    personal: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2',
+    enterprise: 'M3 21h18M6 21V8l6-4 6 4v13M10 12h4M10 16h4',
+    points: 'M12 3l2.6 6.1 6.4.6-4.8 4.3 1.4 6.2L12 17l-5.6 3.2 1.4-6.2L3 9.7l6.4-.6z',
+    dashboard: 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6',
+    project: 'M6 3h9l4 4v14H6zM15 3v5h5M9 13h7M9 17h5',
+    team: 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-1.5a3.5 3.5 0 0 0-2.5-3.35M4 21v-1.5a3.5 3.5 0 0 1 2.5-3.35',
+    method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3'
+  };
+
+  var NAV = [
+    { group: '平台演示', items: [
+      { k: 'overview', label: '概览' },
+      { k: 'personal', label: '个人碳足迹' },
+      { k: 'enterprise', label: '企业碳账本' },
+      { k: 'points', label: '绿色积分' },
+      { k: 'dashboard', label: '数据看板' }
+    ] },
+    { group: '项目资料', items: [
+      { k: 'project', label: '项目资料' },
+      { k: 'team', label: '团队与成果' },
+      { k: 'method', label: '数据与方法' }
+    ] }
+  ];
+
+  var TITLES = {
+    overview: '概览', personal: '个人碳足迹', enterprise: '企业碳账本', points: '绿色积分',
+    dashboard: '数据看板', project: '项目资料', team: '团队与成果', method: '数据与方法'
+  };
+
+  var state = S.load(K);
+  var main, rail;
+
+  function setPath(obj, path, value) {
+    var parts = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (cur[parts[i]] == null || typeof cur[parts[i]] !== 'object') cur[parts[i]] = {};
+      cur = cur[parts[i]];
+    }
+    cur[parts[parts.length - 1]] = value;
+  }
+
+  function getPath(obj, path) {
+    return path.split('.').reduce(function (o, k) { return o == null ? undefined : o[k]; }, obj);
+  }
+
+  function buildRail() {
+    var html = '<div class="rail-caption">MODULES</div>';
+    NAV.forEach(function (g) {
+      html += '<div class="rail-group">' + g.group + '</div>';
+      g.items.forEach(function (it) {
+        html += '<button type="button" data-go="' + it.k + '" data-key="' + it.k + '">' +
+          '<span class="ico"><svg viewBox="0 0 24 24"><path d="' + ICONS[it.k] + '"/></svg></span>' +
+          '<span>' + it.label + '</span></button>';
+      });
+    });
+    html += '<div class="rail-foot">碳寻 · Carbon Seeker<br>v1.0 · 单文件构建</div>';
+    rail.innerHTML = html;
+  }
+
+  function syncRail() {
+    Array.prototype.forEach.call(rail.querySelectorAll('button[data-key]'), function (b) {
+      var on = b.getAttribute('data-key') === state.view;
+      if (on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+  }
+
+  function render() {
+    var view = typeof V[state.view] === 'function' ? state.view : 'overview';
+    var active = document.activeElement;
+    var focusKey = null, caret = null;
+    if (active && main.contains(active)) {
+      if (active.getAttribute('data-bind')) focusKey = { kind: 'bind', v: active.getAttribute('data-bind') };
+      else if (active.getAttribute('data-row')) focusKey = { kind: 'row', v: active.getAttribute('data-row') + '|' + active.getAttribute('data-field') };
+      if (focusKey && active.setSelectionRange) {
+        try { caret = active.selectionStart; } catch (e) { caret = null; }
+      }
+    }
+
+    main.innerHTML = V[view](state);
+    syncRail();
+    document.title = '碳寻 · ' + (TITLES[view] || '概览') + ' | Carbon Seeker';
+    S.save(state);
+
+    if (focusKey) {
+      var sel = focusKey.kind === 'bind'
+        ? '[data-bind="' + focusKey.v.replace(/"/g, '') + '"]'
+        : '[data-row="' + focusKey.v.split('|')[0] + '"][data-field="' + focusKey.v.split('|')[1] + '"]';
+      var el = main.querySelector(sel);
+      if (el) {
+        el.focus();
+        if (caret != null && el.setSelectionRange) {
+          try { el.setSelectionRange(caret, caret); } catch (e) { /* number 输入不支持，忽略 */ }
+        }
+      }
+    }
+  }
+
+  function setView(view, push) {
+    if (!V[view]) view = 'overview';
+    state.view = view;
+    if (push !== false && global.location.hash !== '#' + view) {
+      history.replaceState(null, '', '#' + view);
+    }
+    render();
+    global.scrollTo({ top: 0, behavior: 'instant' in global ? 'instant' : 'auto' });
+  }
+
+  /* ---------------- 导出 ---------------- */
+
+  function reportMarkdown() {
+    var em = K.personalEmission(state.personal);
+    var bench = K.personalBenchmark(em.annual);
+    var sug = K.suggestions(state.personal, em);
+    var ent = K.enterpriseSummary(state.enterprise);
+    var potential = K.suggestionsTotal(sug);
+    var pts = K.pointsFromCarbonKg(potential);
+    var plan = K.redeemPlan(pts, F.POINTS.items);
+    var L = [];
+
+    L.push('# 碳寻 · 测算报告');
+    L.push('');
+    L.push('- 项目：' + P.meta.name + '（' + P.meta.en + '）— ' + P.meta.tagline);
+    L.push('- 生成时间：' + new Date().toLocaleString('zh-CN'));
+    L.push('- 口径：全部因子见「数据与方法」，计算在浏览器本地完成');
+    L.push('');
+    L.push('## 一、个人碳足迹');
+    L.push('');
+    L.push('| 指标 | 数值 |');
+    L.push('| --- | --- |');
+    L.push('| 月排放 | ' + K.fmt(em.monthly, 1) + ' kgCO₂e |');
+    L.push('| 年排放 | ' + K.fmt(em.annual / 1000, 2) + ' tCO₂e |');
+    L.push('| 绿色出行抵扣 | ' + K.fmt(em.savedAnnual, 1) + ' kgCO₂e/年 |');
+    L.push('| 对比基准（' + K.fmt(bench.benchmark / 1000, 1) + ' t） | ' + (bench.ratio * 100).toFixed(0) + '% |');
+    L.push('');
+    L.push('### 构成');
+    L.push('');
+    L.push('| 类别 | kgCO₂e/月 | 占比 |');
+    L.push('| --- | --- | --- |');
+    ['food', 'home', 'travel', 'goods'].forEach(function (g) {
+      var name = { food: '食物', home: '居住', travel: '出行', goods: '用品' }[g];
+      var v = em.groups[g];
+      L.push('| ' + name + ' | ' + K.fmt(v, 1) + ' | ' + (em.grossMonthly > 0 ? (v / em.grossMonthly * 100).toFixed(1) : '0.0') + '% |');
+    });
+    L.push('');
+    L.push('### 减排建议');
+    L.push('');
+    L.push('| # | 建议 | 可减 kgCO₂e/年 | 积分 | 难度 |');
+    L.push('| --- | --- | --- | --- | --- |');
+    sug.forEach(function (x) {
+      L.push('| ' + x.rank + ' | ' + x.title + ' | ' + K.fmt(x.save, 0) + ' | ' + K.fmt(x.points, 0) + ' | ' + x.level + ' |');
+    });
+    L.push('');
+    L.push('建议合计可减 ' + K.fmt(potential, 0) + ' kgCO₂e/年，折 ' + K.fmt(pts, 0) + ' 绿色积分。');
+    L.push('');
+    L.push('## 二、企业碳账本');
+    L.push('');
+    L.push('- 企业：' + state.enterprise.name + '（' + (ent.sector ? ent.sector.name : '未选行业') + '）');
+    L.push('- 年产值：' + K.fmt(ent.output, 0) + ' 万元；员工：' + K.fmt(state.enterprise.employees, 0) + ' 人');
+    L.push('');
+    L.push('| 范围 | tCO₂e | 占比 |');
+    L.push('| --- | --- | --- |');
+    [1, 2, 3].forEach(function (n) {
+      var v = ent.byScope[n] || 0;
+      L.push('| Scope ' + n + ' | ' + K.fmt(v, 2) + ' | ' + (ent.total > 0 ? (v / ent.total * 100).toFixed(1) : '0.0') + '% |');
+    });
+    L.push('| 合计 | ' + K.fmt(ent.total, 2) + ' | 100.0% |');
+    L.push('');
+    L.push('| 排放源 | 用量 | 单位 | 因子 | tCO₂e |');
+    L.push('| --- | --- | --- | --- | --- |');
+    ent.rows.forEach(function (r) {
+      L.push('| ' + r.name + ' | ' + K.fmt(r.qty, 0) + ' | ' + r.unit + ' | ' + K.fmt(r.factor, 3) + ' | ' + K.fmt(r.t, 3) + ' |');
+    });
+    L.push('');
+    L.push('- 排放强度：' + K.fmt(ent.intensity, 3) + ' tCO₂e/万元');
+    L.push('- 行业基准：' + K.fmt(ent.benchmark, 3) + ' tCO₂e/万元（' + (ent.ratio * 100).toFixed(0) + '%）');
+    L.push('- 免费配额：' + K.fmt(ent.freeQuota, 2) + ' t；缺口：' + K.fmt(ent.gap, 2) + ' t');
+    L.push('');
+    L.push('## 三、绿色积分');
+    L.push('');
+    L.push('| 兑换物 | 单价 | 份数 | 消耗 | 固碳 kgCO₂e |');
+    L.push('| --- | --- | --- | --- | --- |');
+    plan.list.forEach(function (it) {
+      L.push('| ' + it.name + ' | ' + it.cost + ' | ' + it.count + ' | ' + it.spent + ' | ' + (it.kind === 'carbon' ? K.fmt(it.credit, 2) : '—') + ' |');
+    });
+    L.push('');
+    L.push('合计消耗 ' + plan.spent + ' 分，剩余 ' + plan.left + ' 分，固碳 ' + K.fmt(plan.credit, 2) + ' kgCO₂e，海洋垃圾清理 ' + plan.oceanKg + ' kg。');
+    L.push('');
+    L.push('---');
+    L.push('由碳寻展示站自动生成。因子与边界见站点「数据与方法」页；本站为项目演示，不构成碳核查结论。');
+    return L.join('\n');
+  }
+
+  function reportJson() {
+    var em = K.personalEmission(state.personal);
+    var sug = K.suggestions(state.personal, em);
+    var ent = K.enterpriseSummary(state.enterprise);
+    var payload = {
+      app: 'carbon-seeker',
+      generatedAt: new Date().toISOString(),
+      input: { personal: state.personal, enterprise: state.enterprise, points: state.points },
+      result: {
+        personal: {
+          monthlyKg: em.monthly, annualKg: em.annual, grossMonthlyKg: em.grossMonthly,
+          activeSavingKg: em.savedAnnual, groups: em.groups, shares: em.shares,
+          benchmark: K.personalBenchmark(em.annual),
+          suggestions: sug.map(function (x) { return { id: x.id, title: x.title, saveKgYear: x.save, points: x.points, level: x.level }; }),
+          potentialKgYear: K.suggestionsTotal(sug)
+        },
+        enterprise: {
+          totalT: ent.total, byScope: ent.byScope, intensity: ent.intensity,
+          benchmark: ent.benchmark, ratio: ent.ratio, freeQuotaT: ent.freeQuota, gapT: ent.gap,
+          rows: ent.rows.map(function (r) { return { name: r.name, scope: r.scope, qty: r.qty, unit: r.unit, factor: r.factor, t: r.t }; })
+        },
+        points: K.redeemPlan(K.pointsFromCarbonKg(K.suggestionsTotal(sug)), F.POINTS.items)
+      },
+      factorsVersion: '2024-01 (站内表)',
+      build: global.__BUILD__ || null
+    };
+    return JSON.stringify(payload, null, 2);
+  }
+
+  function reportCsv() {
+    var ent = K.enterpriseSummary(state.enterprise);
+    var lines = ['范围,排放源,用量,单位,因子kgCO2e/单位,tCO2e,备注'];
+    ent.rows.forEach(function (r) {
+      lines.push([r.scope, r.name, r.qty, r.unit, r.factor, r.t.toFixed(4), (r.note || '').replace(/,/g, '；')].join(','));
+    });
+    lines.push(['合计', '', '', '', '', ent.total.toFixed(4), '强度 ' + ent.intensity.toFixed(4) + ' t/万元'].join(','));
+    return '\uFEFF' + lines.join('\r\n');
+  }
+
+  /* ---------------- 事件 ---------------- */
+
+  function action(name) {
+    switch (name) {
+      case 'personal-reset':
+        state.personal = S.clone(K.PERSONAL_DEFAULT); break;
+      case 'personal-zero':
+        Object.keys(state.personal).forEach(function (g) {
+          Object.keys(state.personal[g]).forEach(function (k) { state.personal[g][k] = 0; });
+        });
+        break;
+      case 'enterprise-reset':
+        state.enterprise = S.clone(K.ENTERPRISE_DEFAULT); break;
+      case 'points-auto':
+        state.points = null; break;
+      case 'row-add': {
+        var id = 'r' + Math.random().toString(36).slice(2, 8);
+        state.enterprise.rows.push({ id: id, scope: 1, fk: 'gas', qty: 0, note: '' });
+        break;
+      }
+      case 'export-md':
+        S.download('碳寻测算报告_' + S.stamp() + '.md', reportMarkdown(), 'text/markdown;charset=utf-8'); return;
+      case 'export-json':
+        S.download('碳寻测算_' + S.stamp() + '.json', reportJson(), 'application/json;charset=utf-8'); return;
+      case 'export-csv':
+        S.download('碳寻碳账本_' + S.stamp() + '.csv', reportCsv(), 'text/csv;charset=utf-8'); return;
+      case 'print':
+        global.print(); return;
+      case 'theme':
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        document.body.classList.toggle('dark', state.theme === 'dark');
+        var btn = document.getElementById('themeBtn');
+        if (btn) btn.setAttribute('aria-label', state.theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');
+        S.save(state);
+        return;
+      default: return;
+    }
+    render();
+  }
+
+  function onClick(e) {
+    var go = e.target.closest('[data-go]');
+    if (go) { e.preventDefault(); setView(go.getAttribute('data-go')); return; }
+
+    var del = e.target.closest('[data-del]');
+    if (del) {
+      var id = del.getAttribute('data-del');
+      state.enterprise.rows = state.enterprise.rows.filter(function (r) { return r.id !== id; });
+      render(); return;
+    }
+
+    var act = e.target.closest('[data-act]');
+    if (act) { e.preventDefault(); action(act.getAttribute('data-act')); return; }
+  }
+
+  function onInput(e) {
+    var t = e.target;
+    if (!t || !t.matches) return;
+
+    if (t.hasAttribute('data-bind')) {
+      var path = t.getAttribute('data-bind');
+      var isNum = t.type === 'number';
+      var raw = t.value;
+
+      if (path === 'points') {
+        state.points = raw === '' ? null : Math.max(0, Math.round(parseFloat(raw) || 0));
+        if (raw === '') return;   // 允许清空输入框，不立刻回填
+        render(); return;
+      }
+      if (isNum) {
+        if (raw === '') { setPath(state, path, 0); return; }  // 空值先静默置 0
+        var v = parseFloat(raw);
+        if (isNaN(v)) v = 0;
+        setPath(state, path, Math.max(0, v));
+      } else {
+        setPath(state, path, raw);
+      }
+      render(); return;
+    }
+
+    if (t.hasAttribute('data-row')) {
+      var rid = t.getAttribute('data-row');
+      var fieldName = t.getAttribute('data-field');
+      var row = state.enterprise.rows.filter(function (r) { return r.id === rid; })[0];
+      if (!row) return;
+      if (fieldName === 'qty') {
+        var q = t.value === '' ? 0 : Math.max(0, parseFloat(t.value) || 0);
+        row.qty = q;
+        if (t.value === '') return;
+      } else if (fieldName === 'scope') {
+        row.scope = Number(t.value);
+      } else {
+        row[fieldName] = t.value;
+      }
+      render();
+    }
+  }
+
+  function boot() {
+    main = document.getElementById('main');
+    rail = document.getElementById('rail');
+    buildRail();
+
+    document.body.classList.toggle('dark', state.theme === 'dark');
+
+    var hash = (global.location.hash || '').replace('#', '');
+    if (hash && V[hash]) state.view = hash;
+
+    render();
+
+    document.addEventListener('click', onClick);
+    main.addEventListener('input', onInput);
+    main.addEventListener('change', onInput);
+    global.addEventListener('hashchange', function () {
+      var v = (global.location.hash || '').replace('#', '');
+      if (v && V[v] && v !== state.view) { state.view = v; render(); }
+    });
+
+    var themeBtn = document.getElementById('themeBtn');
+    if (themeBtn) themeBtn.addEventListener('click', function () { action('theme'); });
+
+    var buildTag = document.getElementById('buildTag');
+    if (buildTag && global.__BUILD__) {
+      buildTag.textContent = 'build ' + global.__BUILD__.digest;
+      buildTag.title = '构建时间 ' + global.__BUILD__.time + ' · 源提交 ' + (global.__BUILD__.sourceCommit || 'dev');
+    }
+
+    var status = document.getElementById('statusText');
+    if (status) status.textContent = '就绪 · 全部计算在本地完成';
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+</body>
+</html>
