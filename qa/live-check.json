@@ -1,18 +1,18 @@
 {
   "base": "https://11sj817.github.io/carbon-seeker/",
-  "checkedAt": "2026-11-08T14:02:26.934Z",
+  "checkedAt": "2026-11-08T14:20:54.409Z",
   "views": [
     {
       "view": "overview",
       "title": "碳寻 · 概览 | Carbon Seeker",
-      "chars": 1483,
+      "chars": 1522,
       "h2": "碳寻 · 企业碳减排管理的碳应用平台",
       "cards": 6,
       "charts": 1,
       "tables": 1,
       "inputs": 0,
       "kpis": 4,
-      "tiles": 9,
+      "tiles": 10,
       "docWidth": 1425,
       "winWidth": 1440,
       "overflow": false,
@@ -129,6 +129,24 @@
       "errors": []
     },
     {
+      "view": "research",
+      "title": "碳寻 · 关联研究 | Carbon Seeker",
+      "chars": 2879,
+      "h2": "为什么“愿意用”比“能算碳”更难",
+      "cards": 8,
+      "charts": 1,
+      "tables": 4,
+      "inputs": 0,
+      "kpis": 4,
+      "tiles": 4,
+      "docWidth": 1425,
+      "winWidth": 1440,
+      "overflow": false,
+      "railOn": "关联研究",
+      "bad": false,
+      "errors": []
+    },
+    {
       "view": "method",
       "title": "碳寻 · 数据与方法 | Carbon Seeker",
       "chars": 2075,
@@ -188,7 +206,7 @@
     "export": {
       "blobSize": 2713,
       "blobType": "text/markdown;charset=utf-8",
-      "download": "碳寻测算报告_20261108-2202.md"
+      "download": "碳寻测算报告_20261108-2221.md"
     },
     "errors": []
   },
