@@ -7,12 +7,13 @@
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
-  function defaults(calc) {
+  function defaults(calc, econ) {
     return {
       view: 'overview',
       theme: 'light',
       personal: clone(calc.PERSONAL_DEFAULT),
       enterprise: clone(calc.ENTERPRISE_DEFAULT),
+      econ: clone((econ || calc).ECON_DEFAULT),
       points: null
     };
   }
@@ -30,8 +31,8 @@
     return base;
   }
 
-  function load(calc) {
-    var base = defaults(calc);
+  function load(calc, econ) {
+    var base = defaults(calc, econ);
     var raw = null;
     try { raw = global.localStorage ? global.localStorage.getItem(KEY) : memory; } catch (err) { raw = memory; }
     if (!raw) return base;
@@ -44,13 +45,13 @@
   }
 
   function save(state) {
-    var raw = JSON.stringify({ view: state.view, theme: state.theme, personal: state.personal, enterprise: state.enterprise, points: state.points });
+    var raw = JSON.stringify({ view: state.view, theme: state.theme, personal: state.personal, enterprise: state.enterprise, econ: state.econ, points: state.points });
     memory = raw;
     try { if (global.localStorage) global.localStorage.setItem(KEY, raw); } catch (err) { /* 隐私模式下静默 */ }
   }
 
-  function reset(calc) {
-    var base = defaults(calc);
+  function reset(calc, econ) {
+    var base = defaults(calc, econ);
     try { if (global.localStorage) global.localStorage.removeItem(KEY); } catch (err) { /* noop */ }
     memory = null;
     return base;

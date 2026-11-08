@@ -26,16 +26,18 @@
 | 个人碳足迹 | 衣食住行 27 个输入，月/年排放、结构环形图、月度趋势、Top5 明细、8 条可执行建议 |
 | 企业碳账本 | 按排放源逐行填报，自动汇总 Scope 占比、产值强度、行业对标、配额缺口、帕累托排序 |
 | 绿色积分 | 积分规则、兑换物进度、按积分模拟兑换并折算固碳量 |
+| 推广测算 | 给定预算、获客成本、留存率与人均减碳量，算每吨碳的推广成本，并与碳价对照 |
 | 数据看板 | 个人与企业两侧的结构、趋势、口径对照 |
 | 项目资料 | 政策 / 市场 / 痛点 / SWOT / 产品 / 盈利 / STP / 规划 / 财务 / 风险 |
 | 团队与成果 | 9 名学生、4 位导师、7 家合作企业、获奖与论文 |
+| 关联研究 | 大创结题报告的 TAM+SEM 结论、四条推广困境、四条实现路径、传导链衰减、困境×路径矩阵、待修订项 |
 | 数据与方法 | 因子表、公式、人均参照、边界与限制、构建信息 |
 
 ## 开发与构建
 
 ```bash
-# 计算内核与图表生成器：19 个用例
-node --test tests/calc.test.js
+# 计算内核、推广经济模型与图表生成器：28 个用例
+node --test tests/calc.test.js tests/econ.test.js
 
 # 合成单文件：dist/index.html + docs/index.html（GitHub Pages 目录）
 python build.py
@@ -65,8 +67,9 @@ src/
   core/calc.js      计算内核：个人足迹 / 企业账本 / 积分兑换 / 趋势（纯函数）
   core/charts.js    环形、柱状、横条对标、趋势（纯 SVG 字符串）
   core/store.js     状态持久化 + file 下载
+  core/econ.js      推广经济模型 + TAM 传导 + 困境×路径矩阵（纯函数）
   data/project.js   计划书事实数据（政策、市场、SWOT、财务、团队…）
-  ui/views.js       8 个视图，纯函数 (state) → HTML
+  ui/views.js      10 个视图，纯函数 (state) → HTML
   ui/app.js         路由、双向绑定、导出、主题、焦点保持
 build.py            合成单文件并注入 window.__BUILD__ 摘要
 tests/calc.test.js  node --test

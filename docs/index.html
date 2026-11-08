@@ -141,6 +141,7 @@ main{margin-left:var(--rail-w);padding:0 26px 88px;max-width:1500px}
 .grid{display:grid;gap:16px}
 .grid.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .grid.side{grid-template-columns:340px minmax(0,1fr);align-items:start}
+.grid.split{grid-template-columns:320px minmax(0,1fr);align-items:start}
 .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .muted{color:var(--dim)}
 .small{font-size:11.5px;line-height:1.85}
@@ -318,6 +319,7 @@ footer.status .sp{margin-left:auto}
 /* 响应式 */
 @media (max-width:1180px){
   .grid.side{grid-template-columns:minmax(0,1fr)!important}
+  .grid.split{grid-template-columns:minmax(0,1fr)}
   .grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -355,10 +357,99 @@ footer.status .sp{margin-left:auto}
   *{transition:none!important;animation:none!important}
   .tile:hover{transform:none}
 }
+
+/* ============================================================
+   精修层：过渡、焦点、滚动、图表交互、Hero 层次
+   只增强观感与可读性，不改变版式骨架
+   ============================================================ */
+
+:root{
+  --font-num:"Cascadia Code",Consolas,"SFMono-Regular",monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* 主题切换的过渡（只过渡颜色，避免布局抖动） */
+body, .app-header, #rail, .card, .kpi, table, thead th, tbody td,
+input, select, textarea, button.btn, .tag, .pill, .note, .tile, .seg, .sugg, .bar{
+  transition:background-color .26s var(--ease), border-color .26s var(--ease), color .2s var(--ease);
+}
+
+/* 选中与滚动条 */
+::selection{background:color-mix(in srgb,var(--acc) 26%,transparent);color:var(--txt)}
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--dim) 45%,transparent) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--dim) 38%,transparent);border-radius:6px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--acc) 55%,transparent);background-clip:content-box}
+
+/* 输入焦点：比 1px 描边更强的可感知性 */
+input:focus,select:focus,textarea:focus{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 16%,transparent);
+  outline-color:transparent;
+}
+/* 按钮按下的轻微反馈 */
+button.btn:active:not(:disabled){transform:translateY(.5px)}
+button.btn.primary{
+  background-image:linear-gradient(180deg,color-mix(in srgb,#fff 12%,var(--acc)),var(--acc));
+  border-color:color-mix(in srgb,var(--acc) 70%,#000);
+}
+button.btn.primary:hover{filter:brightness(1.05)}
+
+/* KPI：数字更大、字距更紧，单位跟随基线 */
+.kpi .v{font-size:26px;letter-spacing:-.8px}
+.kpi.hl .v{color:var(--acc)}
+.kpi{position:relative;overflow:hidden}
+.kpi.hl::after{
+  content:"";position:absolute;right:-16px;top:-16px;width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--acc) 11%,transparent),transparent 72%);
+  pointer-events:none;
+}
+
+/* Hero 层次：极淡的绿色沉降，让首屏有重心 */
+.card.pad-lg.accent{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 5%,var(--panel)) 0%,var(--panel) 58%);
+}
+
+/* 图表交互：悬停提亮（tooltip 由 <title> 提供） */
+svg.chart rect,svg.chart circle,svg.chart path{transition:filter .14s var(--ease),opacity .14s var(--ease)}
+svg.chart rect:hover,svg.chart circle:hover{filter:brightness(1.09)}
+svg.chart polyline{filter:drop-shadow(0 1px 0 color-mix(in srgb,var(--acc) 22%,transparent))}
+
+/* 表格滚动区在窄屏给出“可横滑”的暗示 */
+.table-wrap{position:relative}
+@media (max-width:900px){
+  .table-wrap{background-image:linear-gradient(90deg,transparent 92%,color-mix(in srgb,var(--acc) 10%,transparent))}
+}
+
+/* 移动端底部导航：激活项加顶部指示条 */
+@media (max-width:900px){
+  #rail button{position:relative}
+  #rail button[aria-current="true"]::before{
+    content:"";position:absolute;left:50%;top:2px;transform:translateX(-50%);
+    width:18px;height:2px;border-radius:2px;background:#fff;opacity:.85;
+  }
+  #rail button .ico svg{width:17px;height:17px}
+}
+
+/* 细节：标题与分隔的呼吸感 */
+.page-head{padding-top:24px}
+.card h3{margin-bottom:16px;letter-spacing:.1px}
+.card h4{margin-top:20px}
+details.acc>summary:hover{background:var(--panel2)}
+details.acc>summary{transition:background-color .18s var(--ease)}
+
+/* 长文本行高与断行 */
+.small,.note,.muted{overflow-wrap:anywhere}
+.sugg .m{max-width:70ch}
+
+@media print{
+  .kpi.hl::after{display:none}
+  .card.pad-lg.accent{background:#fff}
+}
 </style>
 </head>
 <body>
-<script>window.__BUILD__ = {"app": "carbon-seeker", "version": "1.0.0", "digest": "40cb87f7c06a", "time": "2026-11-08T14:17:45Z", "sourceCommit": "23218313db3e5f298fddd16e3ad6486c09e5e3d0", "sourceDirty": true, "note": "digest 为注入脚本后的正文 SHA-256 前 12 位；sourceCommit 是构建时本地 HEAD。"};</script>
+<script>window.__BUILD__ = {"app": "carbon-seeker", "version": "1.0.0", "digest": "29a9e71b798a", "time": "2026-11-08T15:44:15Z", "sourceCommit": "d6d6f3520f514e93c3f44138a93a428a6765de80", "sourceDirty": true, "note": "digest 为注入脚本后的正文 SHA-256 前 12 位；sourceCommit 是构建时本地 HEAD。"};</script>
 <a class="skip" href="#main">跳到主要内容</a>
 
 <header class="app-header">
@@ -1062,12 +1153,13 @@ footer.status .sp{margin-left:auto}
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
-  function defaults(calc) {
+  function defaults(calc, econ) {
     return {
       view: 'overview',
       theme: 'light',
       personal: clone(calc.PERSONAL_DEFAULT),
       enterprise: clone(calc.ENTERPRISE_DEFAULT),
+      econ: clone((econ || calc).ECON_DEFAULT),
       points: null
     };
   }
@@ -1085,8 +1177,8 @@ footer.status .sp{margin-left:auto}
     return base;
   }
 
-  function load(calc) {
-    var base = defaults(calc);
+  function load(calc, econ) {
+    var base = defaults(calc, econ);
     var raw = null;
     try { raw = global.localStorage ? global.localStorage.getItem(KEY) : memory; } catch (err) { raw = memory; }
     if (!raw) return base;
@@ -1099,13 +1191,13 @@ footer.status .sp{margin-left:auto}
   }
 
   function save(state) {
-    var raw = JSON.stringify({ view: state.view, theme: state.theme, personal: state.personal, enterprise: state.enterprise, points: state.points });
+    var raw = JSON.stringify({ view: state.view, theme: state.theme, personal: state.personal, enterprise: state.enterprise, econ: state.econ, points: state.points });
     memory = raw;
     try { if (global.localStorage) global.localStorage.setItem(KEY, raw); } catch (err) { /* 隐私模式下静默 */ }
   }
 
-  function reset(calc) {
-    var base = defaults(calc);
+  function reset(calc, econ) {
+    var base = defaults(calc, econ);
     try { if (global.localStorage) global.localStorage.removeItem(KEY); } catch (err) { /* noop */ }
     memory = null;
     return base;
@@ -1129,6 +1221,231 @@ footer.status .sp{margin-left:auto}
   var API = { KEY: KEY, load: load, save: save, reset: reset, download: download, stamp: stamp, clone: clone };
   global.CS = global.CS || {};
   global.CS.store = API;
+  if (typeof module !== 'undefined' && module.exports) module.exports = API;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+
+</script>
+<!-- core/econ.js -->
+<script>
+/* 推广经济模型 + TAM 传导测算
+   目的：补上结题报告自陈的短板——“未考虑经济效率（开发成本与推广成本）”。
+   全部为纯函数，浏览器与 node --test 共用；口径与边界写在页面「数据与方法」里。
+   */
+(function (global) {
+  'use strict';
+
+  var F = (typeof module !== 'undefined' && module.exports)
+    ? require('./factors.js')
+    : (global.CS && global.CS.factors);
+
+  function num(v) {
+    var n = typeof v === 'number' ? v : parseFloat(v);
+    if (!isFinite(n) || n < 0) return 0;
+    return n;
+  }
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+  /* 全国碳市场 CEA 价格区间（示意，用于“推广成本能否被碳价覆盖”的对照） */
+  var CARBON_PRICE = { low: 50, mid: 70, high: 90, note: '元 / tCO₂e，按近年全国碳市场配额成交价区间取的示意值' };
+
+  var ECON_DEFAULT = {
+    budget: 20,        // 推广预算（万元）
+    cac: 9,            // 单用户获客成本（元/人）
+    retention: 0.62,   // 月度留存率
+    perUserKg: 420,    // 人均年减碳量（kgCO₂e）
+    creditCost: 0.15,  // 积分兑付成本（元 / kg 减排）
+    fixedCost: 3.5     // 运营固定成本（万元/年）
+  };
+
+  /* ---------- 核心测算 ---------- */
+  function promoteEconomy(m) {
+    var s = m || ECON_DEFAULT;
+    var budgetYuan = num(s.budget) * 10000;
+    var cac = num(s.cac);
+    var users = cac > 0 ? budgetYuan / cac : 0;
+
+    /* 留存率上限取 1（循环按幂计算，不会出现除零）；超过 1 的输入视为无效并夹到 1 */
+    var r = clamp(num(s.retention), 0, 1);
+    var curve = [], sumActive = 0;
+    for (var i = 1; i <= 12; i++) {
+      var active = users * Math.pow(r, i - 1);
+      curve.push({ month: i + '月', value: active, index: i });
+      sumActive += active;
+    }
+    var avgActive = sumActive / 12;
+    var endActive = users * Math.pow(r, 11);
+
+    var yearKg = avgActive * num(s.perUserKg);
+    var yearT = yearKg / 1000;
+
+    var acquire = budgetYuan;
+    var credit = yearKg * num(s.creditCost);
+    var fixed = num(s.fixedCost) * 10000;
+    var total = acquire + credit + fixed;
+
+    var perT = yearT > 0 ? total / yearT : 0;
+    var perUser = avgActive > 0 ? total / avgActive : 0;
+
+    /* 碳价对照：若把减碳量按中位碳价变现，能覆盖多少推广成本 */
+    var revenue = yearT * CARBON_PRICE.mid;
+    var coverage = total > 0 ? revenue / total : 0;
+    var gap = total - revenue;
+
+    return {
+      users: users,
+      avgActive: avgActive,
+      endActive: endActive,
+      curve: curve,
+      yearKg: yearKg,
+      yearT: yearT,
+      cost: { acquire: acquire, credit: credit, fixed: fixed, total: total },
+      perT: perT,
+      perUserYear: perUser,
+      revenue: revenue,
+      coverage: coverage,
+      gap: gap,
+      verdict: yearT <= 0 ? 'none' : (coverage >= 1 ? 'covered' : coverage >= 0.5 ? 'partial' : 'heavy')
+    };
+  }
+
+  /* ---------- 预算敏感度 ---------- */
+  var SWEEP = [0.5, 0.75, 1, 1.5, 2, 3];
+  function budgetSweep(m) {
+    var s = m || ECON_DEFAULT;
+    var base = num(s.budget);
+    return SWEEP.map(function (k) {
+      var probe = {};
+      Object.keys(s).forEach(function (key) { probe[key] = s[key]; });
+      probe.budget = base * k;
+      var e = promoteEconomy(probe);
+      return { budget: probe.budget, users: e.users, yearT: e.yearT, perT: e.perT, factor: k };
+    });
+  }
+
+  /* ---------- 情景对比 ---------- */
+  var SCENARIOS = [
+    { k: 'conservative', name: '保守', patch: { cac: 14, retention: 0.5, perUserKg: 300 } },
+    { k: 'base', name: '基准', patch: {} },
+    { k: 'optimistic', name: '乐观', patch: { cac: 5.5, retention: 0.76, perUserKg: 560 } }
+  ];
+
+  function scenarioTable(m) {
+    var s = m || ECON_DEFAULT;
+    return SCENARIOS.map(function (sc) {
+      var probe = {};
+      Object.keys(s).forEach(function (key) { probe[key] = s[key]; });
+      Object.keys(sc.patch).forEach(function (key) { probe[key] = sc.patch[key]; });
+      var e = promoteEconomy(probe);
+      return {
+        k: sc.k, name: sc.name,
+        cac: num(probe.cac), retention: num(probe.retention), perUserKg: num(probe.perUserKg),
+        users: e.users, yearT: e.yearT, perT: e.perT, coverage: e.coverage
+      };
+    });
+  }
+
+  /* ---------- TAM 传导链 ----------
+     只用结题报告给出的三条标准化路径系数：
+       感知易用性 → 感知有用性  0.509
+       感知有用性 → 使用态度    0.533
+       使用态度   → 行为意愿    0.559
+     报告未给出 H2（易用性→态度）与 H5（主观规范→意愿）的系数，
+     因此这里不臆造，只做“已知链路的传导强度”分解，并明确标注为连乘近似。 */
+  var TAM = {
+    easeToUseful: 0.509,
+    usefulToAttitude: 0.533,
+    attitudeToIntention: 0.559
+  };
+
+  function tamTransmission() {
+    var a = TAM.easeToUseful, b = TAM.usefulToAttitude, c = TAM.attitudeToIntention;
+    return {
+      coefficients: TAM,
+      /* 三段路径的强度 */
+      steps: [
+        { from: '感知易用性', to: '感知有用性', coef: a },
+        { from: '感知有用性', to: '使用态度', coef: b },
+        { from: '使用态度', to: '行为意愿', coef: c }
+      ],
+      /* 逐段累计：走到“行为意愿”还剩多少 */
+      cumulative: [
+        { label: '易用性 → 有用性', value: a },
+        { label: '易用性 → 态度（经有用性）', value: a * b },
+        { label: '易用性 → 意愿（全程）', value: a * b * c },
+        { label: '有用性 → 意愿（经态度）', value: b * c },
+        { label: '态度 → 意愿（直接）', value: c }
+      ],
+      /* 一句话结论用的数字 */
+      decay: a * b * c,
+      note: '标准化路径系数连乘，用于比较不同起点的传导强度，不是因果增量。'
+    };
+  }
+
+  /* ---------- 困境 → 路径 覆盖矩阵 ----------
+     来源：结题报告 2.1–2.4（困境）与 4.1–4.4（路径）。
+     强度：2 = 直接对症，1 = 部分缓解，0 = 关系弱。 */
+  var MATRIX = {
+    barriers: [
+      { k: 'b1', name: '激励方式难满足需求' },
+      { k: 'b2', name: '碳足迹追踪繁琐' },
+      { k: 'b3', name: '缺乏统一核算标准' },
+      { k: 'b4', name: '平台独立、缺乏联动' }
+    ],
+    paths: [
+      { k: 'p1', name: '区块链 + 云计算' },
+      { k: 'p2', name: '区块链碳交易' },
+      { k: 'p3', name: '虚拟现实体验' },
+      { k: 'p4', name: '多技术综合激励' }
+    ],
+    score: {
+      b1: { p1: 0, p2: 0, p3: 1, p4: 2 },
+      b2: { p1: 2, p2: 1, p3: 0, p4: 1 },
+      b3: { p1: 1, p2: 2, p3: 0, p4: 0 },
+      b4: { p1: 2, p2: 1, p3: 0, p4: 1 }
+    }
+  };
+
+  function matrixSummary() {
+    var out = { rows: [], pathTotals: {}, barrierTotals: {} };
+    MATRIX.paths.forEach(function (p) { out.pathTotals[p.k] = 0; });
+    MATRIX.barriers.forEach(function (b) {
+      var row = { k: b.k, name: b.name, cells: [], total: 0 };
+      MATRIX.paths.forEach(function (p) {
+        var v = MATRIX.score[b.k][p.k] || 0;
+        row.cells.push({ path: p.k, score: v });
+        row.total += v;
+        out.pathTotals[p.k] += v;
+      });
+      out.barrierTotals[b.k] = row.total;
+      out.rows.push(row);
+    });
+    /* 哪条路径覆盖面最广 */
+    var best = null;
+    MATRIX.paths.forEach(function (p) {
+      if (!best || out.pathTotals[p.k] > out.pathTotals[best.k]) best = p;
+    });
+    out.best = best;
+    out.weakestBarrier = MATRIX.barriers.slice().sort(function (x, y) {
+      return out.barrierTotals[x.k] - out.barrierTotals[y.k];
+    })[0];
+    return out;
+  }
+
+  var API = {
+    ECON_DEFAULT: ECON_DEFAULT,
+    CARBON_PRICE: CARBON_PRICE,
+    promoteEconomy: promoteEconomy,
+    budgetSweep: budgetSweep,
+    scenarioTable: scenarioTable,
+    tamTransmission: tamTransmission,
+    MATRIX: MATRIX,
+    matrixSummary: matrixSummary,
+    num: num,
+    clamp: clamp
+  };
+
+  global.CS = global.CS || {};
+  global.CS.econ = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -1578,6 +1895,7 @@ footer.status .sp{margin-left:auto}
       tile('dashboard', '数据看板', '把个人与企业两侧的排放、强度、趋势放在同一屏比较。', 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6') +
       tile('project', '项目资料', '政策、市场、痛点、商业模式、财务与规划，一页读完计划书核心。', 'M6 3h9l4 4v14H6zM15 3v5h5') +
       tile('team', '团队与成果', '9 名学生、4 位导师、7 家合作企业，以及省赛铜奖的来路。', 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z') +
+      tile('economics', '推广测算', '每减一吨碳要花多少钱推出去？算清获客、留存与每吨成本，再和碳价对照。', 'M3 17l5-6 4 3 5-7 4 4M3 21h18M7 21v-4m5 4v-2m4 2v-6') +
       tile('research', '关联研究', '大创结题报告：TAM+SEM 解释“为什么愿意用”，四条元宇宙实现路径。', 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM12 3v3m0 12v3M3 12h3m12 0h3') +
       '</div>';
 
@@ -1632,7 +1950,7 @@ footer.status .sp{margin-left:auto}
       '个人记录碳足迹、企业建立碳账本、平台提供碳咨询与人才培养 —— 三个角色共用一套积分与数据口径。',
       '<button class="btn" data-go="method">数据与方法</button>' +
       '<button class="btn primary" data-act="export-md">导出当前测算</button>') +
-      kpis + hero + snapshot + '<div class="card"><h3>四个可操作模块 + 两页资料</h3>' + tiles + '</div>' +
+      kpis + hero + snapshot + '<div class="card"><h3>八个入口 <span class="sub">五个能算的 + 三个能读的</span></h3>' + tiles + '</div>' +
       '<div class="grid two" style="align-items:start">' + pains + tl + '</div>' + market;
   }
 
@@ -1892,7 +2210,7 @@ footer.status .sp{margin-left:auto}
       '<button class="btn" data-act="export-csv">导出 CSV</button>' +
       '<button class="btn primary" data-act="export-md">导出报告</button>') +
       kpis +
-      '<div class="grid" style="grid-template-columns:340px minmax(0,1fr);align-items:start">' +
+      '<div class="grid split">' +
       '<div>' + info + scopeCard + '</div>' +
       '<div>' + ledger + '</div>' +
       '</div>' +
@@ -2352,17 +2670,194 @@ footer.status .sp{margin-left:auto}
       '<div class="note" style="margin-top:10px">前两项（时间线年份、拟合指标符号）是评委最容易追问的地方，建议改稿时优先处理；' +
       '其余为编号、缺值与错别字。经费与成果名称已逐项核对。</div></div>';
 
+    /* 报告自陈局限之后的两处深化：传导链衰减 + 困境×路径覆盖 */
+    var ECON = global.CS.econ;
+    var tam = ECON.tamTransmission();
+    var chainRows = tam.cumulative.map(function (c) {
+      var pct = Math.min(1, c.value / 0.6);
+      return '<div style="display:grid;grid-template-columns:200px minmax(0,1fr) 58px;gap:9px;align-items:center;margin-bottom:9px">' +
+        '<span class="small">' + esc(c.label) + '</span>' +
+        bar(pct, c.value >= 0.5 ? 'var(--c1)' : 'var(--c3)') +
+        '<span class="mono small" style="text-align:right">' + c.value.toFixed(3) + '</span></div>';
+    }).join('');
+
+    var chainCard = '<div class="card"><h3>传导链的衰减 <span class="sub">把三条已知系数连起来看</span></h3>' +
+      chainRows +
+      '<div class="note">从“易用性”起步，走到“行为意愿”只剩 <b>' + tam.decay.toFixed(3) + '</b>；' +
+      '而“态度 → 意愿”这一段本身就是 <b>0.559</b>。也就是说：<b>把界面做好能带来的意愿提升，' +
+      '远不如先让人相信“这事有用”</b>。报告没有给出 H2、H5 的系数，这里不做外推。</div>' +
+      '<div class="note warn" style="margin-top:8px">方法说明：' + esc(tam.note) + '</div></div>';
+
+    var mx = ECON.matrixSummary();
+    var dotHtml = function (v) {
+      if (v === 2) return '<span style="color:var(--acc);letter-spacing:1px">●●●</span>';
+      if (v === 1) return '<span style="color:var(--c3);letter-spacing:1px">●●</span>';
+      return '<span class="muted">—</span>';
+    };
+    var matrixTable = '<div class="table-wrap"><table>' +
+      '<thead><tr><th>推广困境 ＼ 技术路径</th>' +
+      ECON.MATRIX.paths.map(function (p) {
+        return '<th class="num">' + esc(p.name) + '</th>';
+      }).join('') + '</tr></thead><tbody>' +
+      ECON.MATRIX.barriers.map(function (b) {
+        var row = mx.rows.filter(function (r) { return r.k === b.k; })[0];
+        return '<tr><td>' + esc(b.name) + '</td>' +
+          row.cells.map(function (c) { return '<td class="num">' + dotHtml(c.score) + '</td>'; }).join('') +
+          '</tr>';
+      }).join('') +
+      '</tbody></table></div>';
+
+    var matrixCard = '<div class="card"><h3>哪条路径治哪个病 <span class="sub">困境 × 路径覆盖矩阵</span></h3>' +
+      matrixTable +
+      '<div class="note" style="margin-top:10px">覆盖最广的是 <b>' + esc(mx.best.name) + '</b>（合计 ' +
+      mx.pathTotals[mx.best.k] + ' 分）—— 它同时解“追踪繁琐”和“平台孤岛”。' +
+      '相对最难解的是 <b>' + esc(mx.weakestBarrier.name) + '</b>（' + mx.barrierTotals[mx.weakestBarrier.k] + ' 分），' +
+      '因为它是商业模式问题，不是技术问题。</div>' +
+      '<div class="legend" style="margin-top:8px"><span><b style="color:var(--acc)">●●●</b> 直接对症</span>' +
+      '<span><b style="color:var(--c3)">●●</b> 部分缓解</span><span class="muted">— 关系弱</span></div></div>';
+
     return head + kpis +
       '<div class="grid two" style="align-items:start">' + dossier + outcomes + '</div>' +
       '<div class="grid two" style="align-items:start">' + survey + barriers + '</div>' +
-      tamCard + pathsCard +
+      tamCard + chainCard + matrixCard + pathsCard +
       '<div class="grid two" style="align-items:start">' + relation + errata + '</div>';
+  }
+
+  /* ---------------- 推广测算 ---------------- */
+
+  function economics(state) {
+    var E = global.CS.econ;
+    var m = state.econ;
+    var r = E.promoteEconomy(m);
+    var sweep = E.budgetSweep(m);
+    var scenes = E.scenarioTable(m);
+    var price = E.CARBON_PRICE;
+
+    var kpis = '<section class="kpis">' +
+      kpi('可获用户', K.fmt(r.users, 0), '人', '按 ' + K.fmt(m.cac, 1) + ' 元/人获客') +
+      kpi('年减碳量', K.fmt(r.yearT, 1), 'tCO₂e', '月均活跃 ' + K.fmt(r.avgActive, 0) + ' 人', 'hl') +
+      kpi('每吨碳推广成本', K.fmt(r.perT, 0), '元/tCO₂e', '碳价中位 ' + price.mid + ' 元/t') +
+      kpi('碳价覆盖率', K.fmt(r.coverage * 100, 0), '%', r.gap > 0 ? '缺口 ' + K.fmt(r.gap / 10000, 1) + ' 万元' : '可由碳价覆盖') +
+      '</section>';
+
+    var inputCard = '<div class="card accent"><h3>推广参数</h3>' +
+      '<div class="row-inline">' +
+      field('econ.budget', '推广预算', m.budget, '万元', { step: 1 }) +
+      field('econ.cac', '单用户获客成本', m.cac, '元/人', { step: 0.5 }) +
+      '</div>' +
+      '<div class="row-inline">' +
+      field('econ.retention', '月度留存率', m.retention, '0–1', { step: 0.01, max: 1 }) +
+      field('econ.perUserKg', '人均年减碳', m.perUserKg, 'kg/人·年', { step: 10 }) +
+      '</div>' +
+      '<div class="row-inline">' +
+      field('econ.creditCost', '积分兑付成本', m.creditCost, '元/kg', { step: 0.01 }) +
+      field('econ.fixedCost', '运营固定成本', m.fixedCost, '万元/年', { step: 0.5 }) +
+      '</div>' +
+      '<div class="note">人均年减碳量可直接用「个人碳足迹」页算出的<b>可减碳潜力</b>；' +
+      '积分兑付成本按 1 kg 减排 = 10 分折算，10 分约合 0.1–0.2 元。</div>' +
+      '<button class="btn mini" data-act="econ-reset" style="margin-top:10px">恢复基准值</button></div>';
+
+    var verdictText = r.verdict === 'covered'
+      ? '按当前参数，<b>减碳量按碳价变现即可覆盖推广成本</b>，模型自洽。'
+      : r.verdict === 'partial'
+        ? '碳价只能覆盖约 <b>' + K.fmt(r.coverage * 100, 0) + '%</b> 的推广成本，其余要靠其他收入补。'
+        : '碳价只能覆盖约 <b>' + K.fmt(r.coverage * 100, 0) + '%</b> 的推广成本 —— 纯靠碳价养不活，' +
+          '必须叠加广告、电商或企业服务收入。';
+
+    var verdictCard = '<div class="card"><h3>结论 <span class="sub">每吨成本 vs 碳价</span></h3>' +
+      '<div class="note ' + (r.verdict === 'covered' ? '' : 'warn') + '">' + verdictText + '</div>' +
+      '<div style="margin-top:12px">' +
+      '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:5px">' +
+      '<span>碳价覆盖推广成本的比例</span><span class="mono">' + K.fmt(r.coverage * 100, 1) + '%</span></div>' +
+      bar(Math.min(1, r.coverage), r.coverage >= 1 ? 'var(--c1)' : 'var(--c3)') + '</div>' +
+      '<div class="grid two" style="margin-top:14px;gap:10px">' +
+      '<div><div class="muted small">每吨推广成本</div><div class="mono" style="font-size:19px;font-weight:700">' +
+      K.fmt(r.perT, 0) + ' <small class="muted">元/t</small></div></div>' +
+      '<div><div class="muted small">碳价中位（示意）</div><div class="mono" style="font-size:19px;font-weight:700">' +
+      price.mid + ' <small class="muted">元/t</small></div></div>' +
+      '</div>' +
+      '<div class="note" style="margin-top:12px">这正是结题报告自陈的短板：<b>没算经济效率</b>。' +
+      '把成本放进来看，个人碳账户的推广不是“技术能不能做到”，而是“谁来付这笔钱”。' +
+      '碳寻的答案是：用个人侧引流、企业侧（碳咨询与培训）收钱。' + '</div></div>';
+
+    var costItems = [
+      { label: '获客投放', value: r.cost.acquire, color: 'var(--c1)' },
+      { label: '积分兑付', value: r.cost.credit, color: 'var(--c2)' },
+      { label: '运营固定', value: r.cost.fixed, color: 'var(--c4)' }
+    ];
+    var costCard = '<div class="card"><h3>成本构成 <span class="sub">首年</span></h3>' +
+      C.donut(costItems, {
+        size: 180, thickness: 22,
+        centerValue: K.fmt(r.cost.total / 10000, 1), centerLabel: '万元 / 年', aria: '推广成本构成'
+      }) +
+      '<div style="margin-top:12px">' + costItems.map(function (it) {
+        var pct = r.cost.total > 0 ? it.value / r.cost.total : 0;
+        return '<div style="margin-bottom:10px">' +
+          '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px">' +
+          '<span>' + esc(it.label) + '</span><span class="mono">' + K.fmt(it.value / 10000, 1) + ' 万元 · ' + (pct * 100).toFixed(0) + '%</span></div>' +
+          bar(pct, it.color) + '</div>';
+      }).join('') + '</div>' +
+      '<div class="note">获客与积分是两笔硬支出；固定成本随规模摊薄，是唯一能靠增长改善的部分。</div></div>';
+
+    var curveCard = '<div class="card"><h3>用户留存衰减 <span class="sub">首年获客 ' + K.fmt(r.users, 0) + ' 人</span></h3>' +
+      C.trend(r.curve, { height: 190, unit: ' 人' }) +
+      '<div class="note">首月 ' + K.fmt(r.users, 0) + ' 人 → 第 12 月 ' + K.fmt(r.endActive, 0) + ' 人，' +
+      '月均活跃 <b>' + K.fmt(r.avgActive, 0) + '</b> 人。留存率每降 10 个百分点，年减碳量几乎同比例下降。</div></div>';
+
+    var sweepCard = '<div class="card"><h3>预算敏感度 <span class="sub">预算 ×0.5 ~ ×3 时的每吨成本</span></h3>' +
+      C.hbars(sweep.map(function (s) {
+        return { label: K.fmt(s.budget, 1) + ' 万元', value: s.perT };
+      }), { unit: ' 元/t', labelWidth: 96, rowH: 28, aria: '预算与单位成本' }) +
+      '<div class="note">规模上去后每吨成本下降 —— 因为固定成本被摊薄；但<b>获客与积分成本是同比例的</b>，' +
+      '所以指望“多投钱就便宜”并不成立，真正要降的是获客单价与留存率。</div></div>';
+
+    var sceneCard = '<div class="card"><h3>三档情景 <span class="sub">只改获客、留存与人均减碳</span></h3>' +
+      table([
+        { label: '情景' }, { label: '获客成本', num: true }, { label: '月留存', num: true },
+        { label: '人均减碳', num: true }, { label: '年减碳 t', num: true },
+        { label: '元/t', num: true }, { label: '碳价覆盖', num: true }
+      ], scenes.map(function (s) {
+        return '<tr><td>' + esc(s.name) + '</td>' +
+          '<td class="num">' + K.fmt(s.cac, 1) + '</td>' +
+          '<td class="num">' + (s.retention * 100).toFixed(0) + '%</td>' +
+          '<td class="num">' + K.fmt(s.perUserKg, 0) + '</td>' +
+          '<td class="num">' + K.fmt(s.yearT, 0) + '</td>' +
+          '<td class="num"><b>' + K.fmt(s.perT, 0) + '</b></td>' +
+          '<td class="num">' + K.fmt(s.coverage * 100, 0) + '%</td></tr>';
+      }).join('')) +
+      '<div class="note" style="margin-top:10px">三档都覆盖不住碳价时，说明这门生意的收入不来自碳市场，' +
+      '而来自碳寻原本写的那四个变现口：广告、电商、线下活动、付费社群。</div></div>';
+
+    return pageHead('平台演示 · 推广测算',
+      '每减一吨碳，要花多少钱把它推出去',
+      '结题报告明确写了“未考虑经济效率（开发成本与推广成本）”。这一页把它补上：' +
+      '给定预算、获客成本、留存率与人均减碳量，算清可获用户、年减碳量与每吨碳的推广成本，再和碳价对照。',
+      '<button class="btn" data-go="research">回到关联研究</button>' +
+      '<button class="btn primary" data-act="export-md">导出报告</button>') +
+      kpis +
+      '<div class="grid split">' +
+      '<div>' + inputCard + costCard + '</div>' +
+      '<div>' + verdictCard + curveCard + '</div>' +
+      '</div>' +
+      '<div class="grid two" style="align-items:start">' + sweepCard + sceneCard + '</div>' +
+      '<div class="card"><h3>这套算法怎么来的</h3>' +
+      '<ul class="small muted" style="margin:0;padding-left:18px;line-height:2.1">' +
+      '<li><b>可获用户</b> = 推广预算 ÷ 单用户获客成本</li>' +
+      '<li><b>第 m 月活跃</b> = 可获用户 × 留存率<sup>m−1</sup>；<b>月均活跃</b> = 12 个月之和 ÷ 12</li>' +
+      '<li><b>年减碳量</b> = 月均活跃 × 人均年减碳量 ÷ 1000（tCO₂e）</li>' +
+      '<li><b>总成本</b> = 推广预算 + 年减碳量(kg) × 积分兑付单价 + 运营固定成本</li>' +
+      '<li><b>每吨成本</b> = 总成本 ÷ 年减碳量；<b>碳价覆盖</b> = 年减碳量 × 碳价 ÷ 总成本</li>' +
+      '</ul>' +
+      '<div class="note warn" style="margin-top:12px"><b>边界：</b>碳价取 ' + price.low + '–' + price.high +
+      ' 元/t 的示意区间（' + esc(price.note) + '）；未计入碳市场对个人开放的政策不确定性、' +
+      '未计入企业侧收入，也未做折现。这是<b>量级判断</b>，不是财务模型。</div></div>';
   }
 
   global.CS = global.CS || {};
   global.CS.views = {
     overview: overview, personal: personal, enterprise: enterprise, points: points,
-    dashboard: dashboard, project: project, team: team, method: method, research: research
+    dashboard: dashboard, project: project, team: team, method: method, research: research,
+    economics: economics
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -2390,7 +2885,8 @@ footer.status .sp{margin-left:auto}
     project: 'M6 3h9l4 4v14H6zM15 3v5h5M9 13h7M9 17h5',
     team: 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-1.5a3.5 3.5 0 0 0-2.5-3.35M4 21v-1.5a3.5 3.5 0 0 1 2.5-3.35',
     method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3',
-    research: 'M12 3v3m0 12v3M3 12h3m12 0h3M6.3 6.3l2.1 2.1m7.3 7.3l2.1 2.1M6.3 17.7l2.1-2.1m7.3-7.3l2.1-2.1M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'
+    research: 'M12 3v3m0 12v3M3 12h3m12 0h3M6.3 6.3l2.1 2.1m7.3 7.3l2.1 2.1M6.3 17.7l2.1-2.1m7.3-7.3l2.1-2.1M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z',
+    economics: 'M3 17l5-6 4 3 5-7 4 4M3 21h18M7 21v-4m5 4v-2m4 2v-6'
   };
 
   var NAV = [
@@ -2399,7 +2895,8 @@ footer.status .sp{margin-left:auto}
       { k: 'personal', label: '个人碳足迹' },
       { k: 'enterprise', label: '企业碳账本' },
       { k: 'points', label: '绿色积分' },
-      { k: 'dashboard', label: '数据看板' }
+      { k: 'dashboard', label: '数据看板' },
+      { k: 'economics', label: '推广测算' }
     ] },
     { group: '项目资料', items: [
       { k: 'project', label: '项目资料' },
@@ -2411,10 +2908,11 @@ footer.status .sp{margin-left:auto}
 
   var TITLES = {
     overview: '概览', personal: '个人碳足迹', enterprise: '企业碳账本', points: '绿色积分',
-    dashboard: '数据看板', project: '项目资料', team: '团队与成果', research: '关联研究', method: '数据与方法'
+    dashboard: '数据看板', economics: '推广测算', project: '项目资料', team: '团队与成果', research: '关联研究', method: '数据与方法'
   };
 
-  var state = S.load(K);
+  var ECON = global.CS.econ;
+  var state = S.load(K, ECON);
   var main, rail;
 
   function setPath(obj, path, value) {
@@ -2630,6 +3128,8 @@ footer.status .sp{margin-left:auto}
         break;
       case 'enterprise-reset':
         state.enterprise = S.clone(K.ENTERPRISE_DEFAULT); break;
+      case 'econ-reset':
+        state.econ = S.clone(ECON.ECON_DEFAULT); break;
       case 'points-auto':
         state.points = null; break;
       case 'row-add': {

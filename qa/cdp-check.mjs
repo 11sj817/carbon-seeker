@@ -10,7 +10,7 @@ import path from 'node:path';
 const port = process.argv[2] || '9333';
 const base = process.argv[3] || 'file:///C:/Temp/cs-qa/index.html';
 const outDir = process.argv[4] || 'qa';
-const VIEWS = ['overview', 'personal', 'enterprise', 'points', 'dashboard', 'project', 'team', 'research', 'method'];
+const VIEWS = ['overview', 'personal', 'enterprise', 'points', 'economics', 'dashboard', 'project', 'team', 'research', 'method'];
 const DESKTOP = { width: 1440, height: 980, deviceScaleFactor: 1, mobile: false };
 const PHONE = { width: 390, height: 844, deviceScaleFactor: 1, mobile: false };
 

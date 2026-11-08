@@ -130,6 +130,7 @@ main{margin-left:var(--rail-w);padding:0 26px 88px;max-width:1500px}
 .grid{display:grid;gap:16px}
 .grid.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .grid.side{grid-template-columns:340px minmax(0,1fr);align-items:start}
+.grid.split{grid-template-columns:320px minmax(0,1fr);align-items:start}
 .grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .muted{color:var(--dim)}
 .small{font-size:11.5px;line-height:1.85}
@@ -307,6 +308,7 @@ footer.status .sp{margin-left:auto}
 /* 响应式 */
 @media (max-width:1180px){
   .grid.side{grid-template-columns:minmax(0,1fr)!important}
+  .grid.split{grid-template-columns:minmax(0,1fr)}
   .grid.three{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -343,4 +345,93 @@ footer.status .sp{margin-left:auto}
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
   .tile:hover{transform:none}
+}
+
+/* ============================================================
+   精修层：过渡、焦点、滚动、图表交互、Hero 层次
+   只增强观感与可读性，不改变版式骨架
+   ============================================================ */
+
+:root{
+  --font-num:"Cascadia Code",Consolas,"SFMono-Regular",monospace;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* 主题切换的过渡（只过渡颜色，避免布局抖动） */
+body, .app-header, #rail, .card, .kpi, table, thead th, tbody td,
+input, select, textarea, button.btn, .tag, .pill, .note, .tile, .seg, .sugg, .bar{
+  transition:background-color .26s var(--ease), border-color .26s var(--ease), color .2s var(--ease);
+}
+
+/* 选中与滚动条 */
+::selection{background:color-mix(in srgb,var(--acc) 26%,transparent);color:var(--txt)}
+*{scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--dim) 45%,transparent) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--dim) 38%,transparent);border-radius:6px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:color-mix(in srgb,var(--acc) 55%,transparent);background-clip:content-box}
+
+/* 输入焦点：比 1px 描边更强的可感知性 */
+input:focus,select:focus,textarea:focus{
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 16%,transparent);
+  outline-color:transparent;
+}
+/* 按钮按下的轻微反馈 */
+button.btn:active:not(:disabled){transform:translateY(.5px)}
+button.btn.primary{
+  background-image:linear-gradient(180deg,color-mix(in srgb,#fff 12%,var(--acc)),var(--acc));
+  border-color:color-mix(in srgb,var(--acc) 70%,#000);
+}
+button.btn.primary:hover{filter:brightness(1.05)}
+
+/* KPI：数字更大、字距更紧，单位跟随基线 */
+.kpi .v{font-size:26px;letter-spacing:-.8px}
+.kpi.hl .v{color:var(--acc)}
+.kpi{position:relative;overflow:hidden}
+.kpi.hl::after{
+  content:"";position:absolute;right:-16px;top:-16px;width:54px;height:54px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--acc) 11%,transparent),transparent 72%);
+  pointer-events:none;
+}
+
+/* Hero 层次：极淡的绿色沉降，让首屏有重心 */
+.card.pad-lg.accent{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 5%,var(--panel)) 0%,var(--panel) 58%);
+}
+
+/* 图表交互：悬停提亮（tooltip 由 <title> 提供） */
+svg.chart rect,svg.chart circle,svg.chart path{transition:filter .14s var(--ease),opacity .14s var(--ease)}
+svg.chart rect:hover,svg.chart circle:hover{filter:brightness(1.09)}
+svg.chart polyline{filter:drop-shadow(0 1px 0 color-mix(in srgb,var(--acc) 22%,transparent))}
+
+/* 表格滚动区在窄屏给出“可横滑”的暗示 */
+.table-wrap{position:relative}
+@media (max-width:900px){
+  .table-wrap{background-image:linear-gradient(90deg,transparent 92%,color-mix(in srgb,var(--acc) 10%,transparent))}
+}
+
+/* 移动端底部导航：激活项加顶部指示条 */
+@media (max-width:900px){
+  #rail button{position:relative}
+  #rail button[aria-current="true"]::before{
+    content:"";position:absolute;left:50%;top:2px;transform:translateX(-50%);
+    width:18px;height:2px;border-radius:2px;background:#fff;opacity:.85;
+  }
+  #rail button .ico svg{width:17px;height:17px}
+}
+
+/* 细节：标题与分隔的呼吸感 */
+.page-head{padding-top:24px}
+.card h3{margin-bottom:16px;letter-spacing:.1px}
+.card h4{margin-top:20px}
+details.acc>summary:hover{background:var(--panel2)}
+details.acc>summary{transition:background-color .18s var(--ease)}
+
+/* 长文本行高与断行 */
+.small,.note,.muted{overflow-wrap:anywhere}
+.sugg .m{max-width:70ch}
+
+@media print{
+  .kpi.hl::after{display:none}
+  .card.pad-lg.accent{background:#fff}
 }

@@ -29,6 +29,7 @@ SCRIPTS = [
     "core/calc.js",
     "core/charts.js",
     "core/store.js",
+    "core/econ.js",
     "data/project.js",
     "ui/views.js",
     "ui/app.js",
