@@ -18,7 +18,8 @@
     dashboard: 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6',
     project: 'M6 3h9l4 4v14H6zM15 3v5h5M9 13h7M9 17h5',
     team: 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-1.5a3.5 3.5 0 0 0-2.5-3.35M4 21v-1.5a3.5 3.5 0 0 1 2.5-3.35',
-    method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3'
+    method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3',
+    research: 'M12 3v3m0 12v3M3 12h3m12 0h3M6.3 6.3l2.1 2.1m7.3 7.3l2.1 2.1M6.3 17.7l2.1-2.1m7.3-7.3l2.1-2.1M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'
   };
 
   var NAV = [
@@ -32,13 +33,14 @@
     { group: '项目资料', items: [
       { k: 'project', label: '项目资料' },
       { k: 'team', label: '团队与成果' },
+      { k: 'research', label: '关联研究' },
       { k: 'method', label: '数据与方法' }
     ] }
   ];
 
   var TITLES = {
     overview: '概览', personal: '个人碳足迹', enterprise: '企业碳账本', points: '绿色积分',
-    dashboard: '数据看板', project: '项目资料', team: '团队与成果', method: '数据与方法'
+    dashboard: '数据看板', project: '项目资料', team: '团队与成果', research: '关联研究', method: '数据与方法'
   };
 
   var state = S.load(K);

@@ -358,7 +358,7 @@ footer.status .sp{margin-left:auto}
 </style>
 </head>
 <body>
-<script>window.__BUILD__ = {"app": "carbon-seeker", "version": "1.0.0", "digest": "1105aa77205a", "time": "2026-11-08T13:58:24Z", "sourceCommit": null, "sourceDirty": false, "note": "digest 为注入脚本后的正文 SHA-256 前 12 位；sourceCommit 是构建时本地 HEAD。"};</script>
+<script>window.__BUILD__ = {"app": "carbon-seeker", "version": "1.0.0", "digest": "40cb87f7c06a", "time": "2026-11-08T14:17:45Z", "sourceCommit": "23218313db3e5f298fddd16e3ad6486c09e5e3d0", "sourceDirty": true, "note": "digest 为注入脚本后的正文 SHA-256 前 12 位；sourceCommit 是构建时本地 HEAD。"};</script>
 <a class="skip" href="#main">跳到主要内容</a>
 
 <header class="app-header">
@@ -1366,6 +1366,108 @@ footer.status .sp{margin-left:auto}
       { t: '政策风险：准入规则不明', d: '试点市场入场标准低、类型单一，个人参与全国碳市场尚无明确规定。', s: '把碳业务作为长期前景持续投入，提前帮助企业完成碳盘查与能力建设。' }
     ],
 
+    /* 关联研究：大学生创新创业训练计划结题报告
+       《“双碳”目标下元宇宙技术赋能个人碳账户推广的实现路径研究》（S202311832004） */
+    research: {
+      title: '“双碳”目标下元宇宙技术赋能个人碳账户推广的实现路径研究',
+      no: 'S202311832004',
+      kind: '河北经贸大学 大学生创新创业训练计划项目 · 结题报告',
+      leader: '李依茹（20 级国贸 3 班 · 商学院）',
+      advisors: '蔡燕、彭程',
+      period: '2022 年 11 月 — 2023 年 11 月',
+      filed: '2023 年 10 月 21 日',
+      budget: 4000,
+      budgetRows: [
+        { item: '调研打车费', amount: 1530 },
+        { item: '劳务费', amount: 970 },
+        { item: '论文咨询费', amount: 1400 },
+        { item: '软件购买', amount: 100 }
+      ],
+      outcomes: [
+        { name: '《智联碳汇——基于元宇宙技术的新型个人碳账户》',
+          award: '“安东杯”河北经贸大学第九届“互联网+”大学生创新创业大赛 特等奖' },
+        { name: '《撬动碳账户小窗口，构建碳减排大格局——“双碳”背景下石家庄市 Z 世代对个人碳账户使用状况调查及影响因素研究报告》',
+          award: '正大杯第十三届全国大学生市场调查与分析大赛总决赛 三等奖' }
+      ],
+      survey: {
+        note: '全国公众为主要调查对象，线上有偿问卷发放、后期质量审核筛选',
+        usage: [
+          { label: '正在使用', v: 57.6, color: 'var(--c1)' },
+          { label: '曾用、已弃用', v: 24.1, color: 'var(--c3)' },
+          { label: '从未使用', v: 18.3, color: 'var(--c4)' }
+        ]
+      },
+      /* 四条推广困境（报告 2.1–2.4） */
+      barriers: [
+        { t: '激励方式难满足需求', d: '碳积分只能换寥寥几种商品或优惠券，交互像打卡、缺少故事性；平台把碳账户当导流工具；缺少“兑换 + 养成 + 证书”一体化的平台，用户分散、单平台盈利空间小。',
+          eg: '88 碳账户 / 蚂蚁森林 / 碳碳星球；碳宝包、早点星球已停运' },
+        { t: '碳足迹追踪繁琐且不全面', d: '除交通出行外，减碳行为多需用户自行拍照上传凭证并人工审核；生活场景只覆盖节电与绿色出行，低碳食品、减少塑料等场景未接轨。',
+          eg: '“自带水杯”要拍照审核才计分' },
+        { t: '缺乏统一量化核算标准', d: '各平台自建因子体系，部分主体无计量能力、依赖第三方；采集方式与计量模型各自为政，应用场景难以互通。',
+          eg: '浦发依托上海环交所；88 碳账户由北京绿色交易所等测算' },
+        { t: '平台独立性强，缺乏联动', d: '平台互不兼容，呈现地域性与单平台化；碳积分只在系统内闭环通兑，跨平台减碳量无法汇总，用户要装多个 App。',
+          eg: '腾讯低碳星球只记微信乘车码；NFC 卡与支付宝乘车码不计入' }
+      ],
+      /* TAM + SEM（报告 3.x） */
+      tam: {
+        latent: ['感知有用性', '感知易用性', '主观规范', '使用态度', '行为意愿'],
+        hypotheses: [
+          'H1：感知有用性 → 使用态度 正向影响',
+          'H2：感知易用性 → 使用态度 正向影响',
+          'H3：感知易用性 → 感知有用性 正向影响',
+          'H4：使用态度 → 行为意愿 正向影响',
+          'H5：主观规范 → 行为意愿 正向影响'
+        ],
+        fitInitial: [
+          { k: 'GFI', v: '0.855', threshold: '> 0.9', ok: false },
+          { k: 'CFI', v: '0.869', threshold: '> 0.8', ok: true },
+          { k: 'AGFI', v: '0.841', threshold: '> 0', ok: true },
+          { k: 'RMSEA', v: '0.09', threshold: '< 0.08', ok: false },
+          { k: 'CMIN/DF', v: '7.037', threshold: '< 3', ok: false }
+        ],
+        paths: [
+          { from: '使用态度', to: '行为意愿', coef: 0.559 },
+          { from: '感知有用性', to: '使用态度', coef: 0.533 },
+          { from: '感知易用性', to: '感知有用性', coef: 0.509 }
+        ],
+        observed: [
+          { latent: '感知有用性', coefs: [0.627, 0.534, 0.586, 0.506], note: '记录日常减碳量、得到奖励、对生活有积极意义影响最大' },
+          { latent: '感知易用性', coefs: [0.457, 0.677, 0.626], note: '平台操作简单、过程人性化影响最大；界面直观影响最小' },
+          { latent: '主观规范', coefs: [0.572, 0.764, 0.731, 0.597], note: '媒体频繁宣传、身边亲友都在使用影响最大' },
+          { latent: '行为意愿', coefs: null, note: '三个观测变量系数均超过 0.7，愿意使用并推荐给朋友' }
+        ]
+      },
+      /* 四条实现路径（报告 4.1–4.4） */
+      paths4: [
+        { k: '区块链 + 云计算', t: '全面追踪碳足迹、丰富减碳场景',
+          d: '多方共同记账让多平台共用统一数据库，解决跨平台涉碳信息共享；加密算法解决追踪与核查中的信任与隐私问题，全流程可追溯；云计算承担核算算力，在线存储与快速换算减排量。' },
+        { k: '区块链', t: '赋能个人碳账户的碳交易功能',
+          d: '构建可信碳交易平台、推动统一核算与统一碳价；去中心化与公开透明提升数据真实性，自动执行降低碳金融风险。' },
+        { k: '虚拟现实', t: '增强排碳与减碳的体验感',
+          d: '把无形的碳分子可视化：排碳超标时在虚拟世界生成极端环境与灾害模拟，强化危机意识。报告引用实验：VR 沉浸式体验砍树的一组用纸量下降 20%，优于读文章与看视频两组。' },
+        { k: '多技术综合', t: '丰富减碳的激励方式',
+          d: 'VR + 数字孪生把现实减碳映射为虚拟土地、服饰、玩偶奖励，并以数字藏品呈现、可租借换碳积分；MR 再映射回现实，延长使用时长、强化社交属性与成就感。' }
+      ],
+      /* 报告自己写的局限 */
+      limits: '报告明确承认：未考虑经济效率，即开发成本与推广成本；未来研究需把推广成本与推广效果一并纳入。',
+      /* 与碳寻的双向关系 */
+      relation: [
+        { side: '碳寻（本站）', d: '面向企业：碳账本、Scope 1/2/3、碳咨询与人才培养、员工减碳计入绩效。' },
+        { side: '智联碳汇（本报告）', d: '面向个人：碳账户、碳积分、元宇宙激励，用 TAM/SEM 解释“为什么愿意用”。' },
+        { side: '交叉点', d: '两端共用一套因子与积分口径；企业侧要员工减排数据，个人侧要可核证的行为记录 —— 这正是本站把个人与企业放在同一看板的原因。共同指导教师：蔡燕。' }
+      ],
+      /* 复核时发现的待修订项（供作者改稿，不影响站内引用） */
+      errata: [
+        { level: '高', t: '时间线年份矛盾', d: '“（五）数据统计（2022 年 8 月）（六）撰写论文（2022 年 9 月）（七）项目总结（2022 年 10 月）”早于执行起始 2022 年 11 月，且与前面（一）–（四）的 2023 年 1–6 月倒序。应为 2023 年。' },
+        { level: '高', t: '拟合指标符号写反', d: '原文“GFI=0.855>0.9、RMSEA=0.09>0.08、CMIN/DF=7.037>3”，这三项其实是未达阈值，用“>”表达会被读成优于阈值。应写成“< 阈值”或直接标注“未达标准”。' },
+        { level: '中', t: '图号重复与交叉引用笔误', d: '正文出现两个“图 3”（TAM 修正模型图 / 结构方程模型路径图）；“修正指数 M.I. 值（如表 26）”应为“表 1”，全文只有表 1–表 3。' },
+        { level: '中', t: '修正后拟合指标缺数值', d: '只写“CMIN/DF、NFI、GFI 等拟合指标均达到显著标准”，未给修正后的具体数值，评审无法复核。' },
+        { level: '中', t: '样本与结论口径', d: '有偿线上问卷存在自选择偏差，“57.6% 正在使用”与 2023 年个人碳账户实际渗透率差距较大。建议补充样本结构与加权说明，或把结论限定为“受访者中”。' },
+        { level: '低', t: '错别字与漏字', d: '“这量条路径”应为“这两条”；“平台减碳量追踪立性强”漏“独”；“以有型的方式呈现”应为“有形”。' },
+        { level: '已核对', t: '经费自洽', d: '1530 + 970 + 1400 + 100 = 4000 元，与“经费资助合计 4000 元”一致。' }
+      ]
+    },
+
     /* 发展规划（计划书第七章） */
     plan: [
       { k: '企业侧', items: ['线上搭建平台了解企业情况并给出培训方向', '成员取得国家认可的碳排放证书后入企实地调研', '按企业问题提供培训建议，深化人才培养', '以员工平台使用数据引入个人绩效考核'] },
@@ -1476,6 +1578,7 @@ footer.status .sp{margin-left:auto}
       tile('dashboard', '数据看板', '把个人与企业两侧的排放、强度、趋势放在同一屏比较。', 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6') +
       tile('project', '项目资料', '政策、市场、痛点、商业模式、财务与规划，一页读完计划书核心。', 'M6 3h9l4 4v14H6zM15 3v5h5') +
       tile('team', '团队与成果', '9 名学生、4 位导师、7 家合作企业，以及省赛铜奖的来路。', 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z') +
+      tile('research', '关联研究', '大创结题报告：TAM+SEM 解释“为什么愿意用”，四条元宇宙实现路径。', 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM12 3v3m0 12v3M3 12h3m12 0h3') +
       '</div>';
 
     var pains = '<div class="card"><h3>项目要解决的三个问题 <span class="sub">计划书 3.3 / PPT 第 5 页</span></h3>' +
@@ -2124,10 +2227,142 @@ footer.status .sp{margin-left:auto}
       '<span class="mono">docs/</span> 作为 GitHub Pages 发布目录，<span class="mono">tests/</span> 用 node --test 校验计算内核。</p></div>';
   }
 
+  /* ---------------- 关联研究 ---------------- */
+
+  function research() {
+    var R = P.research;
+
+    var head = pageHead('关联研究 · 大创结题报告',
+      '为什么“愿意用”比“能算碳”更难',
+      '《' + esc(R.title) + '》用 TAM + SEM 解释公众愿不愿意用个人碳账户，并给出四条元宇宙实现路径。' +
+      '这一页把它的结论接进来，也顺手记下了复核时发现的几处待修订项。',
+      '<button class="btn" data-go="personal">看个人侧怎么算</button>' +
+      '<button class="btn" data-go="project">回到项目资料</button>');
+
+    var kpis = '<section class="kpis">' +
+      kpi('受访者仍在使用', '57.6', '%', 'n = 线上有偿问卷', 'hl') +
+      kpi('曾用后流失', '24.1', '%', '比“从未使用”还高', '') +
+      kpi('行为意愿 ← 使用态度', '0.559', '路径系数', 'SEM 最强路径之一') +
+      kpi('项目经费', K.fmt(R.budget, 0), '元', '4 项支出已核对自洽') +
+      '</section>';
+
+    var dossier = '<div class="card accent"><h3>项目档案</h3>' +
+      '<div class="table-wrap" style="border:0"><table class="plain">' +
+      '<tbody>' +
+      '<tr><td class="muted">项目名称</td><td>' + esc(R.title) + '</td></tr>' +
+      '<tr><td class="muted">项目编号</td><td class="mono">' + esc(R.no) + '</td></tr>' +
+      '<tr><td class="muted">类别</td><td>' + esc(R.kind) + '</td></tr>' +
+      '<tr><td class="muted">负责人</td><td>' + esc(R.leader) + '</td></tr>' +
+      '<tr><td class="muted">指导教师</td><td>' + esc(R.advisors) + '（与本站项目共同指导教师）</td></tr>' +
+      '<tr><td class="muted">执行年限</td><td>' + esc(R.period) + '</td></tr>' +
+      '<tr><td class="muted">填表日期</td><td>' + esc(R.filed) + '</td></tr>' +
+      '</tbody></table></div></div>';
+
+    var outcomes = '<div class="card"><h3>两项成果</h3>' +
+      R.outcomes.map(function (o) {
+        return '<div class="sugg" style="grid-template-columns:minmax(0,1fr);gap:4px">' +
+          '<div class="t">' + esc(o.name) + '</div>' +
+          '<div class="pill block ok">' + esc(o.award) + '</div></div>';
+      }).join('') + '</div>';
+
+    var survey = '<div class="card"><h3>调研：谁在用、谁走了 <span class="sub">报告图 1</span></h3>' +
+      '<div class="grid two" style="align-items:center;gap:10px">' +
+      '<div>' + C.donut(R.survey.usage, {
+        size: 184, thickness: 22,
+        centerValue: '57.6%', centerLabel: '仍在使用', aria: '个人碳账户使用情况'
+      }) + '</div>' +
+      '<div>' + R.survey.usage.map(function (u) {
+        return '<div style="margin-bottom:11px">' +
+          '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px">' +
+          '<span>' + esc(u.label) + '</span><span class="mono">' + u.v + '%</span></div>' +
+          bar(u.v / 100, u.color) + '</div>';
+      }).join('') + '</div></div>' +
+      '<div class="note warn" style="margin-top:8px"><b>口径提醒：</b>' + esc(R.survey.note) +
+      '。有偿线上问卷存在自选择偏差，57.6% 与 2023 年个人碳账户的实际渗透率差距较大，' +
+      '引用时宜限定为“受访者中”。</div></div>';
+
+    var barriers = '<div class="card"><h3>四条推广困境 <span class="sub">报告 2.1–2.4</span></h3>' +
+      R.barriers.map(function (b, i) {
+        return '<div class="sugg" style="grid-template-columns:24px minmax(0,1fr)">' +
+          '<div class="n">' + (i + 1) + '</div>' +
+          '<div><div class="t">' + esc(b.t) + '</div>' +
+          '<div class="m">' + esc(b.d) + '</div>' +
+          '<div class="m" style="margin-top:4px"><span class="mono">例：</span>' + esc(b.eg) + '</div></div></div>';
+      }).join('') + '</div>';
+
+    var fitRows = R.tam.fitInitial.map(function (f) {
+      return '<tr><td class="mono">' + esc(f.k) + '</td><td class="num">' + esc(f.v) + '</td>' +
+        '<td class="mono muted">' + esc(f.threshold) + '</td>' +
+        '<td>' + (f.ok ? '<span class="pill ok">达标</span>' : '<span class="pill bad">未达标</span>') + '</td></tr>';
+    }).join('');
+
+    var pathRows = R.tam.paths.map(function (p) {
+      return '<div style="display:grid;grid-template-columns:150px minmax(0,1fr) 54px;gap:9px;align-items:center;margin-bottom:9px">' +
+        '<span class="small">' + esc(p.from) + ' → ' + esc(p.to) + '</span>' +
+        bar(p.coef / 0.6, 'var(--c1)') +
+        '<span class="mono small" style="text-align:right">' + p.coef.toFixed(3) + '</span></div>';
+    }).join('');
+
+    var obsRows = R.tam.observed.map(function (o) {
+      var vals = o.coefs ? o.coefs.map(function (c) { return c.toFixed(3); }).join('、') : '均 > 0.700';
+      return '<tr><td style="white-space:nowrap">' + esc(o.latent) + '</td><td class="mono">' + esc(vals) + '</td>' +
+        '<td class="small muted">' + esc(o.note) + '</td></tr>';
+    }).join('');
+
+    var tamCard = '<div class="card"><h3>模型：TAM + 结构方程 <span class="sub">报告 3.1–3.5</span></h3>' +
+      '<div class="note" style="margin-bottom:12px">五个潜变量：' + R.tam.latent.map(function (l) {
+        return '<span class="pill acc" style="margin-right:5px">' + esc(l) + '</span>';
+      }).join('') + '</div>' +
+      '<div class="grid two" style="align-items:start">' +
+      '<div><h4>初始模型拟合（未达标项已标红）</h4>' +
+      table([{ label: '指标' }, { label: '实测', num: true }, { label: '常用阈值' }, { label: '判定' }], fitRows, { plain: true }) +
+      '<div class="note" style="margin-top:10px">GFI、RMSEA、CMIN/DF 三项未达常用阈值，报告据此做了修正；' +
+      '修正后只写“均达到显著标准”，未给具体数值。</div></div>' +
+      '<div><h4>主要路径系数</h4>' + pathRows +
+      '<div class="note" style="margin-top:8px">使用态度对行为意愿影响最大 —— 换句话说，<b>先让人觉得“这事有意义”</b>，' +
+      '比先做功能更能带来使用意愿。</div></div>' +
+      '</div>' +
+      '<h4>观测变量对潜变量的影响</h4>' +
+      table([{ label: '潜变量' }, { label: '观测系数', num: true }, { label: '报告结论' }], obsRows, { plain: true }) +
+      '<h4>五条研究假设</h4><ul class="small muted" style="margin:0;padding-left:18px;line-height:2">' +
+      R.tam.hypotheses.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul></div>';
+
+    var pathsCard = '<div class="card"><h3>四条实现路径 <span class="sub">报告 4.1–4.4</span></h3>' +
+      '<div class="tiles">' + R.paths4.map(function (p) {
+        return '<div class="tile" style="cursor:default">' +
+          '<div class="pill acc" style="margin-bottom:8px">' + esc(p.k) + '</div>' +
+          '<h4>' + esc(p.t) + '</h4><p>' + esc(p.d) + '</p></div>';
+      }).join('') + '</div>' +
+      '<div class="note" style="margin-top:12px"><b>报告自陈局限：</b>' + esc(R.limits) + '</div></div>';
+
+    var relation = '<div class="card"><h3>和“碳寻”是什么关系</h3>' +
+      R.relation.map(function (r) {
+        return '<div class="sugg" style="grid-template-columns:120px minmax(0,1fr)">' +
+          '<div class="t" style="margin:0">' + esc(r.side) + '</div>' +
+          '<div class="m" style="font-size:12px">' + esc(r.d) + '</div></div>';
+      }).join('') + '</div>';
+
+    var errata = '<div class="card"><h3>复核时发现的待修订项 <span class="sub">供作者改稿，不影响站内引用</span></h3>' +
+      table([{ label: '等级' }, { label: '问题' }, { label: '说明' }],
+        R.errata.map(function (e) {
+          var cls = e.level === '高' ? 'bad' : e.level === '中' ? 'warn' : e.level === '低' ? '' : 'ok';
+          return '<tr><td style="white-space:nowrap;width:66px"><span class="pill ' + cls + '">' + esc(e.level) + '</span></td>' +
+            '<td style="white-space:nowrap">' + esc(e.t) + '</td><td class="small muted">' + esc(e.d) + '</td></tr>';
+        }).join(''), { plain: true }) +
+      '<div class="note" style="margin-top:10px">前两项（时间线年份、拟合指标符号）是评委最容易追问的地方，建议改稿时优先处理；' +
+      '其余为编号、缺值与错别字。经费与成果名称已逐项核对。</div></div>';
+
+    return head + kpis +
+      '<div class="grid two" style="align-items:start">' + dossier + outcomes + '</div>' +
+      '<div class="grid two" style="align-items:start">' + survey + barriers + '</div>' +
+      tamCard + pathsCard +
+      '<div class="grid two" style="align-items:start">' + relation + errata + '</div>';
+  }
+
   global.CS = global.CS || {};
   global.CS.views = {
     overview: overview, personal: personal, enterprise: enterprise, points: points,
-    dashboard: dashboard, project: project, team: team, method: method
+    dashboard: dashboard, project: project, team: team, method: method, research: research
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
@@ -2154,7 +2389,8 @@ footer.status .sp{margin-left:auto}
     dashboard: 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6',
     project: 'M6 3h9l4 4v14H6zM15 3v5h5M9 13h7M9 17h5',
     team: 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM20 21v-1.5a3.5 3.5 0 0 0-2.5-3.35M4 21v-1.5a3.5 3.5 0 0 1 2.5-3.35',
-    method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3'
+    method: 'M9 3h6M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4A2 2 0 0 0 18 17l-4-8V3',
+    research: 'M12 3v3m0 12v3M3 12h3m12 0h3M6.3 6.3l2.1 2.1m7.3 7.3l2.1 2.1M6.3 17.7l2.1-2.1m7.3-7.3l2.1-2.1M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'
   };
 
   var NAV = [
@@ -2168,13 +2404,14 @@ footer.status .sp{margin-left:auto}
     { group: '项目资料', items: [
       { k: 'project', label: '项目资料' },
       { k: 'team', label: '团队与成果' },
+      { k: 'research', label: '关联研究' },
       { k: 'method', label: '数据与方法' }
     ] }
   ];
 
   var TITLES = {
     overview: '概览', personal: '个人碳足迹', enterprise: '企业碳账本', points: '绿色积分',
-    dashboard: '数据看板', project: '项目资料', team: '团队与成果', method: '数据与方法'
+    dashboard: '数据看板', project: '项目资料', team: '团队与成果', research: '关联研究', method: '数据与方法'
   };
 
   var state = S.load(K);

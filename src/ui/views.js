@@ -92,6 +92,7 @@
       tile('dashboard', '数据看板', '把个人与企业两侧的排放、强度、趋势放在同一屏比较。', 'M4 19V5m0 14h16M8 15l3-4 3 2 4-6') +
       tile('project', '项目资料', '政策、市场、痛点、商业模式、财务与规划，一页读完计划书核心。', 'M6 3h9l4 4v14H6zM15 3v5h5') +
       tile('team', '团队与成果', '9 名学生、4 位导师、7 家合作企业，以及省赛铜奖的来路。', 'M16 21v-2a4 4 0 0 0-8 0v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z') +
+      tile('research', '关联研究', '大创结题报告：TAM+SEM 解释“为什么愿意用”，四条元宇宙实现路径。', 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM12 3v3m0 12v3M3 12h3m12 0h3') +
       '</div>';
 
     var pains = '<div class="card"><h3>项目要解决的三个问题 <span class="sub">计划书 3.3 / PPT 第 5 页</span></h3>' +
@@ -740,9 +741,141 @@
       '<span class="mono">docs/</span> 作为 GitHub Pages 发布目录，<span class="mono">tests/</span> 用 node --test 校验计算内核。</p></div>';
   }
 
+  /* ---------------- 关联研究 ---------------- */
+
+  function research() {
+    var R = P.research;
+
+    var head = pageHead('关联研究 · 大创结题报告',
+      '为什么“愿意用”比“能算碳”更难',
+      '《' + esc(R.title) + '》用 TAM + SEM 解释公众愿不愿意用个人碳账户，并给出四条元宇宙实现路径。' +
+      '这一页把它的结论接进来，也顺手记下了复核时发现的几处待修订项。',
+      '<button class="btn" data-go="personal">看个人侧怎么算</button>' +
+      '<button class="btn" data-go="project">回到项目资料</button>');
+
+    var kpis = '<section class="kpis">' +
+      kpi('受访者仍在使用', '57.6', '%', 'n = 线上有偿问卷', 'hl') +
+      kpi('曾用后流失', '24.1', '%', '比“从未使用”还高', '') +
+      kpi('行为意愿 ← 使用态度', '0.559', '路径系数', 'SEM 最强路径之一') +
+      kpi('项目经费', K.fmt(R.budget, 0), '元', '4 项支出已核对自洽') +
+      '</section>';
+
+    var dossier = '<div class="card accent"><h3>项目档案</h3>' +
+      '<div class="table-wrap" style="border:0"><table class="plain">' +
+      '<tbody>' +
+      '<tr><td class="muted">项目名称</td><td>' + esc(R.title) + '</td></tr>' +
+      '<tr><td class="muted">项目编号</td><td class="mono">' + esc(R.no) + '</td></tr>' +
+      '<tr><td class="muted">类别</td><td>' + esc(R.kind) + '</td></tr>' +
+      '<tr><td class="muted">负责人</td><td>' + esc(R.leader) + '</td></tr>' +
+      '<tr><td class="muted">指导教师</td><td>' + esc(R.advisors) + '（与本站项目共同指导教师）</td></tr>' +
+      '<tr><td class="muted">执行年限</td><td>' + esc(R.period) + '</td></tr>' +
+      '<tr><td class="muted">填表日期</td><td>' + esc(R.filed) + '</td></tr>' +
+      '</tbody></table></div></div>';
+
+    var outcomes = '<div class="card"><h3>两项成果</h3>' +
+      R.outcomes.map(function (o) {
+        return '<div class="sugg" style="grid-template-columns:minmax(0,1fr);gap:4px">' +
+          '<div class="t">' + esc(o.name) + '</div>' +
+          '<div class="pill block ok">' + esc(o.award) + '</div></div>';
+      }).join('') + '</div>';
+
+    var survey = '<div class="card"><h3>调研：谁在用、谁走了 <span class="sub">报告图 1</span></h3>' +
+      '<div class="grid two" style="align-items:center;gap:10px">' +
+      '<div>' + C.donut(R.survey.usage, {
+        size: 184, thickness: 22,
+        centerValue: '57.6%', centerLabel: '仍在使用', aria: '个人碳账户使用情况'
+      }) + '</div>' +
+      '<div>' + R.survey.usage.map(function (u) {
+        return '<div style="margin-bottom:11px">' +
+          '<div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px">' +
+          '<span>' + esc(u.label) + '</span><span class="mono">' + u.v + '%</span></div>' +
+          bar(u.v / 100, u.color) + '</div>';
+      }).join('') + '</div></div>' +
+      '<div class="note warn" style="margin-top:8px"><b>口径提醒：</b>' + esc(R.survey.note) +
+      '。有偿线上问卷存在自选择偏差，57.6% 与 2023 年个人碳账户的实际渗透率差距较大，' +
+      '引用时宜限定为“受访者中”。</div></div>';
+
+    var barriers = '<div class="card"><h3>四条推广困境 <span class="sub">报告 2.1–2.4</span></h3>' +
+      R.barriers.map(function (b, i) {
+        return '<div class="sugg" style="grid-template-columns:24px minmax(0,1fr)">' +
+          '<div class="n">' + (i + 1) + '</div>' +
+          '<div><div class="t">' + esc(b.t) + '</div>' +
+          '<div class="m">' + esc(b.d) + '</div>' +
+          '<div class="m" style="margin-top:4px"><span class="mono">例：</span>' + esc(b.eg) + '</div></div></div>';
+      }).join('') + '</div>';
+
+    var fitRows = R.tam.fitInitial.map(function (f) {
+      return '<tr><td class="mono">' + esc(f.k) + '</td><td class="num">' + esc(f.v) + '</td>' +
+        '<td class="mono muted">' + esc(f.threshold) + '</td>' +
+        '<td>' + (f.ok ? '<span class="pill ok">达标</span>' : '<span class="pill bad">未达标</span>') + '</td></tr>';
+    }).join('');
+
+    var pathRows = R.tam.paths.map(function (p) {
+      return '<div style="display:grid;grid-template-columns:150px minmax(0,1fr) 54px;gap:9px;align-items:center;margin-bottom:9px">' +
+        '<span class="small">' + esc(p.from) + ' → ' + esc(p.to) + '</span>' +
+        bar(p.coef / 0.6, 'var(--c1)') +
+        '<span class="mono small" style="text-align:right">' + p.coef.toFixed(3) + '</span></div>';
+    }).join('');
+
+    var obsRows = R.tam.observed.map(function (o) {
+      var vals = o.coefs ? o.coefs.map(function (c) { return c.toFixed(3); }).join('、') : '均 > 0.700';
+      return '<tr><td style="white-space:nowrap">' + esc(o.latent) + '</td><td class="mono">' + esc(vals) + '</td>' +
+        '<td class="small muted">' + esc(o.note) + '</td></tr>';
+    }).join('');
+
+    var tamCard = '<div class="card"><h3>模型：TAM + 结构方程 <span class="sub">报告 3.1–3.5</span></h3>' +
+      '<div class="note" style="margin-bottom:12px">五个潜变量：' + R.tam.latent.map(function (l) {
+        return '<span class="pill acc" style="margin-right:5px">' + esc(l) + '</span>';
+      }).join('') + '</div>' +
+      '<div class="grid two" style="align-items:start">' +
+      '<div><h4>初始模型拟合（未达标项已标红）</h4>' +
+      table([{ label: '指标' }, { label: '实测', num: true }, { label: '常用阈值' }, { label: '判定' }], fitRows, { plain: true }) +
+      '<div class="note" style="margin-top:10px">GFI、RMSEA、CMIN/DF 三项未达常用阈值，报告据此做了修正；' +
+      '修正后只写“均达到显著标准”，未给具体数值。</div></div>' +
+      '<div><h4>主要路径系数</h4>' + pathRows +
+      '<div class="note" style="margin-top:8px">使用态度对行为意愿影响最大 —— 换句话说，<b>先让人觉得“这事有意义”</b>，' +
+      '比先做功能更能带来使用意愿。</div></div>' +
+      '</div>' +
+      '<h4>观测变量对潜变量的影响</h4>' +
+      table([{ label: '潜变量' }, { label: '观测系数', num: true }, { label: '报告结论' }], obsRows, { plain: true }) +
+      '<h4>五条研究假设</h4><ul class="small muted" style="margin:0;padding-left:18px;line-height:2">' +
+      R.tam.hypotheses.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul></div>';
+
+    var pathsCard = '<div class="card"><h3>四条实现路径 <span class="sub">报告 4.1–4.4</span></h3>' +
+      '<div class="tiles">' + R.paths4.map(function (p) {
+        return '<div class="tile" style="cursor:default">' +
+          '<div class="pill acc" style="margin-bottom:8px">' + esc(p.k) + '</div>' +
+          '<h4>' + esc(p.t) + '</h4><p>' + esc(p.d) + '</p></div>';
+      }).join('') + '</div>' +
+      '<div class="note" style="margin-top:12px"><b>报告自陈局限：</b>' + esc(R.limits) + '</div></div>';
+
+    var relation = '<div class="card"><h3>和“碳寻”是什么关系</h3>' +
+      R.relation.map(function (r) {
+        return '<div class="sugg" style="grid-template-columns:120px minmax(0,1fr)">' +
+          '<div class="t" style="margin:0">' + esc(r.side) + '</div>' +
+          '<div class="m" style="font-size:12px">' + esc(r.d) + '</div></div>';
+      }).join('') + '</div>';
+
+    var errata = '<div class="card"><h3>复核时发现的待修订项 <span class="sub">供作者改稿，不影响站内引用</span></h3>' +
+      table([{ label: '等级' }, { label: '问题' }, { label: '说明' }],
+        R.errata.map(function (e) {
+          var cls = e.level === '高' ? 'bad' : e.level === '中' ? 'warn' : e.level === '低' ? '' : 'ok';
+          return '<tr><td style="white-space:nowrap;width:66px"><span class="pill ' + cls + '">' + esc(e.level) + '</span></td>' +
+            '<td style="white-space:nowrap">' + esc(e.t) + '</td><td class="small muted">' + esc(e.d) + '</td></tr>';
+        }).join(''), { plain: true }) +
+      '<div class="note" style="margin-top:10px">前两项（时间线年份、拟合指标符号）是评委最容易追问的地方，建议改稿时优先处理；' +
+      '其余为编号、缺值与错别字。经费与成果名称已逐项核对。</div></div>';
+
+    return head + kpis +
+      '<div class="grid two" style="align-items:start">' + dossier + outcomes + '</div>' +
+      '<div class="grid two" style="align-items:start">' + survey + barriers + '</div>' +
+      tamCard + pathsCard +
+      '<div class="grid two" style="align-items:start">' + relation + errata + '</div>';
+  }
+
   global.CS = global.CS || {};
   global.CS.views = {
     overview: overview, personal: personal, enterprise: enterprise, points: points,
-    dashboard: dashboard, project: project, team: team, method: method
+    dashboard: dashboard, project: project, team: team, method: method, research: research
   };
 })(typeof globalThis !== 'undefined' ? globalThis : this);
